@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { uModel } from "../Models/theUSER.js";
 import bcrypt from 'bcrypt'
+import cloudinary from "../Cnfg/Cloudinary.js";
 
 const genToken =(userId)=>{
     const token = jwt.sign({userId}, process.env.myJWTScrt)
@@ -81,13 +82,19 @@ export const Logout= async(req, res)=>{
 export const editInfo = async(req, res)=>{
     try {
         let userId = req.params.id;
-        const {uUserName, uFullName, uBio} = req.body;
+        const {uUserName, uFullName, uBio, uProPic} = req.body;
         if(!userId){
             return res.status(400).json({Msg:"Not found userId"});
        } 
-       let theUser = await uModel.findByIdAndUpdate(userId,{uUserName, uFullName, uBio}, {new: true});
+       let updatedInfo;
+       if(!uProPic){
+        updatedInfo = await uModel.findByIdAndUpdate(userId,{uUserName, uFullName, uBio}, {new: true});
+       } else {
+        let uploadPic = await cloudinary.uploader.upload(uProPic)
+        updatedInfo = await uModel.findByIdAndUpdate(userId, {uUserName, uFullName, uBio, uProPic: uploadPic.secure_url}, {new: true});
+       }
 
-        res.status(200).json({Msg:"Updated infor"}, theUser)
+        res.status(200).json({Msg:"Updated infor"}, updatedInfo)
 
     } catch (error) {
         res.status(500).json({Msg:"Failed to update info.", ERR: error.message})

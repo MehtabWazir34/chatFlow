@@ -6,4 +6,4 @@ export const userRoutes = Router();
 userRoutes.post("/create", signUP);
 userRoutes.post('/login', logIn);
 userRoutes.post('/logout', MiddleChk, Logout);
-userRoutes.put("/update",MiddleChk, editInfo);
+userRoutes.put("/update", MiddleChk, editInfo);

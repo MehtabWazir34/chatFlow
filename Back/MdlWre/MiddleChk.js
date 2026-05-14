@@ -11,11 +11,11 @@ export const MiddleChk=async(req, res, next)=>{
         if(!token){
             return res.status(401).json({Msg:"Err"})
         }
-        let isVerify = jwt.verify(token, process.env.myJWTScrt);
-        if(!isVerify){
+        let isUser = jwt.verify(token, process.env.myJWTScrt);
+        if(!isUser){
         return res.status(401).json({Msg:"Err"})
         }
-        let user = await uModel.findById(isVerify.id).select('-uPassword');
+        let user = await uModel.findById(isUser.id).select('-uPassword');
         if(!user){
             return res.status(404).json({Msg:"Err"});
         };
