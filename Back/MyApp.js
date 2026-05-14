@@ -3,7 +3,7 @@ import cors from 'cors';
 import http, { createServer } from 'http';
 import { userRoutes } from './Routes/User.js';
 import { log } from 'console';
-import { connectDB } from './dbConnection.js';
+import { connectDB } from './DB/dbConnection.js';
 import { configDotenv } from 'dotenv';
 const myApp = express();
 myApp.use(express.json())
