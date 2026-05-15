@@ -16,8 +16,7 @@ export const signUP = async (req, res)=>{
         const lowerName = uUserName.toLowerCase()
         let user = await uModel.findOne({uUserName:lowerName});
         if(user){
-            return
-            res.status(401).json({Msg:"Username exists already!, try different name or login if its you."});
+            return res.status(401).json({Msg:"Username exists already!, try different name or login if its you."});
         } 
     
         const saltStr = await bcrypt.genSalt(10)
@@ -32,7 +31,7 @@ export const signUP = async (req, res)=>{
             addUser,
             token
         })
-        
+
     } catch (error) {
         res.status(500).json({
             Msg:"Failed to create account",
@@ -43,11 +42,10 @@ export const signUP = async (req, res)=>{
 export const logIn = async(req, res)=>{
     try {
         const {uEmail, uPassword} = req.body;
-        if(!uEmail || !uPassword) res.json({Msg:"Fill both the fields to login!"});
+        if(!uEmail || !uPassword) return res.json({Msg:"Fill both the fields to login!"});
         let user = await uModel.findOne({uEmail});
         if(!user){
-            return
-             res.status(404).json({Msg:"User not found!, create account"});
+            return res.status(404).json({Msg:"User not found!, create account"});
             }
         
         let isPassCorrect = await bcrypt.compare(uPassword, user.uPassword);
