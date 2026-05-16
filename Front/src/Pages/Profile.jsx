@@ -1,10 +1,27 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Logo } from "../Parts/Logo"
+import { API_INSTANCE } from "../Utls/API";
 
 function Profile() {
   const [newName, setName] = useState('');
   const [newBio, setBio] = useState('');
   const [pic, setPIC] = useState(null);
+  const [user, setUser] = useState({});
+
+  useEffect(()=>{
+    const getProfile = async()=>{
+      // a.preventDefault();
+    try {
+      let rspns = await API_INSTANCE.get('/user/profile')
+      console.log("PROFILE:", rspns.data || rspns.data.user);
+      // setUser(rspns.data.user)
+      
+    } catch (error) {
+      console.log("ERR-PROFILE", error.message);
+    }
+    }
+    getProfile();
+  },[])
   return (
     <div className="max-w-11/12 h-screen rounded-md py-20 px-36 space-y-4 backdrop-blur-2xl">
       <Logo/>

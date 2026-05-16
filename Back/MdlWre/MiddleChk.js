@@ -11,7 +11,7 @@ export const MiddleChk=async(req, res, next)=>{
         if(!token){
             return res.status(401).json({Msg:"Err"})
         }
-        let isUser = jwt.verify(token, process.env.myJWTScrt);
+        let isUser = jwt.verify(token, `${process.env.myJWTScrt}`);
         if(!isUser){
         return res.status(401).json({Msg:"Err"})
         }

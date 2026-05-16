@@ -1,11 +1,11 @@
-import { Children, createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import {API_INSTANCE} from './Utls/API'
 import { io } from 'socket.io-client'
 const AuthContext = createContext();
 
 export const AuthProvider = ({Children})=>{
     const [token, setToken] = useState(localStorage.getItem("token"));
-    const [userAuth, setUserAuth] = useState(false);
+    const [userAuth, setUserAuth] = useState(null);
     const [onlineUser, setOnlineUsers] = useState([]);
     const [socket, setSocket] = useState(null)
 
@@ -15,8 +15,24 @@ export const AuthProvider = ({Children})=>{
             setUserAuth(respnse.user || respnse.data.user)
             socketConnection(respnse.data.user || respnse.user);
         } catch (error) {
-            console.log("ERRAUTH:", error.message);            
+            console.log("ERR-AUTH:", error.message);            
         }   
+    }
+    const LogOut = ()=>{
+        localStorage.removeItem("token")
+        setToken(null);
+        setUserAuth(null);
+        setOnlineUsers([]);
+        socket.disconnect();
+    }
+    const editInfo = async(body)=>{
+        try {
+            let resp = await API_INSTANCE.put('/user/update', body);
+            setUserAuth(resp.data.user || resp.user)
+            console.log("RES_EDIT;", resp.data);
+        } catch (error) {
+            console.log("ERR-EDIT", error.message);
+        }
     }
     const socketConnection = ((userData)=>{
         if(!userData || socket?.connected) return;
@@ -33,7 +49,7 @@ export const AuthProvider = ({Children})=>{
     }, );
 
     const values = {
-        onlineUser, userAuth, socket, 
+        onlineUser, userAuth, socket, LogOut , editInfo
     }
     return(
         <AuthContext.Provider value={values}>
@@ -41,3 +57,4 @@ export const AuthProvider = ({Children})=>{
         </AuthContext.Provider>
     )
 }
+export default AuthContext;

@@ -2,41 +2,57 @@ import jwt from "jsonwebtoken";
 import { uModel } from "../Models/theUSER.js";
 import bcrypt from 'bcrypt'
 import cloudinary from "../Cnfg/Cloudinary.js";
-
+import  dotenv  from "dotenv";
+import { log } from "console";
+dotenv.config();
 const genToken =(userId)=>{
     const token = jwt.sign({userId}, process.env.myJWTScrt)
     return token;
 } 
-export const signUP = async (req, res)=>{
+// Add this temporarily to test your cloudinary config
+console.log({
+    cloud: process.env.CLOUDINARY_CLOUD_NAME,
+    key: process.env.CLOUDINARY_API_KEY,
+    secret: process.env.CLOUDINARY_API_SECRET
+})
+export const signUP = async (req, res) => {
     try {
-        const { uUserName, uFullName, uEmail, uPassword, uBio, uProPic } = req.body;
-        if( !uUserName || !uFullName || !uEmail || !uBio || !uPassword){
-            return res.status(401).json({Msg: "All fields are required to create account."})
-        };
-        const lowerName = uUserName.toLowerCase()
-        let user = await uModel.findOne({uUserName:lowerName});
-        if(user){
-            return res.status(401).json({Msg:"Username exists already!, try different name or login if its you."});
-        } 
-    
-        const saltStr = await bcrypt.genSalt(10)
+        console.log("BODY:", req.body);      // check fields
+        console.log("FILE:", req.file);  
+        const { uUserName, uFullName, uEmail, uPassword, uBio } = req.body;
+
+        if (!uUserName || !uFullName || !uEmail || !uBio || !uPassword) {
+            return res.status(401).json({ Msg: "All fields are required" });
+        }
+
+        // Upload image to Cloudinary if provided
+        let imageURL = "";
+        if (req.file) {
+            const uploadResult = await cloudinary.uploader.upload(req.file.path);
+            imageURL = uploadResult.secure_url; // ← this is what gets stored in DB
+        }
+        console.log("MULTER:", req.file);
+        
+
+        const saltStr = await bcrypt.genSalt(10);
         const encPassword = await bcrypt.hash(uPassword, saltStr);
+
         const addUser = await uModel.create({
-            uUserName: lowerName, uFullName, uBio, uPassword: encPassword, uEmail
+            uUserName: uUserName.toLowerCase(),
+            uFullName,
+            uBio,
+            uPassword: encPassword,
+            uEmail,
+            uProPic: imageURL  // ← URL string, not the file
         });
+
         let token = genToken(addUser._id);
         addUser.uPassword = undefined;
-         return res.status(200).json({
-            Msg:"Created ", 
-            addUser,
-            token
-        })
+
+        return res.status(200).json({ Msg: "Created", addUser, token });
 
     } catch (error) {
-        res.status(500).json({
-            Msg:"Failed to create account",
-            ERR: error.message
-        })
+        res.status(500).json({ Msg: "Failed to create account", ERR: error.message });
     }
 }
 export const logIn = async(req, res)=>{
@@ -80,7 +96,8 @@ export const Logout= async(req, res)=>{
 export const editInfo = async(req, res)=>{
     try {
         let userId = req.params.id;
-        const {uUserName, uFullName, uBio, uProPic} = req.body;
+        const {uUserName, uFullName, uBio} = req.body;
+        const uProPic = req.file
         if(!userId){
             return res.status(400).json({Msg:"Not found userId"});
        } 
@@ -96,5 +113,15 @@ export const editInfo = async(req, res)=>{
 
     } catch (error) {
         res.status(500).json({Msg:"Failed to update info.", ERR: error.message})
+    }
+}
+export const getProfile = async(req, res)=>{
+    try {
+        const userId = req.user._id || req.user.id;
+        if(!userId) return res.status(404).json({Msg:"Usr not found"});
+        let user = await uModel.findById(userId);
+        res.status(200).json({Msg:"Got the profile!", user})
+    } catch (error) {
+        return res.json({Msg:"Failed to get Profile.", ERR: error.message})
     }
 }
