@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Logo } from "../Parts/Logo";
 import { API_INSTANCE } from "../Utls/API";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../Context";
 function LoginToAccount() {
 
+    const {  LogIN, SIGNup } = useContext(AuthContext);
     const [uEmail, setEmail] = useState('');
     const [uFullName, setName] = useState('');
     const [uUserName, setUserName] = useState('');
@@ -17,41 +19,34 @@ function LoginToAccount() {
     const handleLogin = async (a) => {
         a.preventDefault();
         try {
-            let rspns = await API_INSTANCE.post("/user/login", { uEmail, uPassword });
-            console.log("RSPNS", rspns.data);
+            await LogIN({uEmail, uPassword})
+            navigateTO("/")
         } catch (error) {
             console.log("ERR:", error.message);
         }
     };
     const handleNeXt = () => {
+        if(!uEmail || !uUserName || !uFullName || !uPassword) return;
         setShowBio(true);
     }
     const handleSignUp = async (e) => {
         e.preventDefault();
-        const formData = new FormData();
+        const myFormData = new FormData();
         try {
             if (CurrentState === "signUp" && ShowBio) {
-                // let base64Image = "";
-                // const reader = new FileReader();
-                // reader.readAsDataURL(uProPic)
-                // reader.onload = async () => {
-                //     base64Image = reader.result;
-                // }
-                formData.append("uFullName", uFullName);
-                formData.append("uUserName", uUserName);
-                formData.append("uEmail", uEmail);
-                formData.append("uPassword", uPassword);
-                formData.append("uBio", uBio);
+                myFormData.append("uFullName", uFullName);
+                myFormData.append("uUserName", uUserName);
+                myFormData.append("uEmail", uEmail);
+                myFormData.append("uPassword", uPassword);
+                myFormData.append("uBio", uBio);
                 if(uProPic){
-                    formData.append("uProPic", uProPic);
+                    myFormData.append("uProPic", uProPic);
                 }
-                let rsp = await API_INSTANCE.post("/user/create", formData
-                )
-                console.log(rsp.data);
+                await SIGNup(myFormData);
                 navigateTO("/")
             }
         } catch (error) {
-            console.log({ "Login Failed!": error.message });
+            console.log({ "SignUP Failed!": error.message });
         }
     };
 

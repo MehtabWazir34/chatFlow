@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 export const userRoutes = Router()
-userRoutes.post("/user/create", (req, res, next) => {
+userRoutes.post("/create", (req, res, next) => {
     console.log("HIT /user/create"); // if this doesn't print, route is wrong
     next();
 }, upload.single("uProPic"), signUP);

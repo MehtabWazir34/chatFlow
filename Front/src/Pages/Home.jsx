@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LeftSidebar from "../Parts/UsersList";
 import OpenChat from "../Parts/OpenChat";
 import OpenProfile from "../Parts/OpenProfile";
 import LoginToAccount from "./Login";
 import { Logo } from "../Parts/Logo";
+import AuthContext from "../Context";
 
 function Home() {
-  const [selectedUser, setUser] = useState(false)
+  const { userAuth } = useContext(AuthContext)
+  const [selectedUser, setUser] = useState(userAuth)
   const [optsDisplay, setOpts] = useState(false);
 
   return (
@@ -19,7 +21,7 @@ function Home() {
           selectedUser ? (
             <>
             <OpenChat selectedUser={selectedUser} setUser={setUser}/>
-            <OpenProfile selectedUser={selectedUser} setUser={setUser}/>
+            <OpenProfile selectedUser={selectedUser} />
             </>
           ) : (
             <Logo/>
