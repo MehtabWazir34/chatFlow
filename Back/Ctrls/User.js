@@ -93,28 +93,36 @@ export const Logout= async(req, res)=>{
         })
     }
 }
-export const editInfo = async(req, res)=>{
+export const editInfo = async (req, res) => {
     try {
-        let userId = req.params.id;
-        const {uUserName, uFullName, uBio} = req.body;
-        const uProPic = req.file
-        if(!userId){
-            return res.status(400).json({Msg:"Not found userId"});
-       } 
-       let updatedInfo;
-       if(!uProPic){
-        updatedInfo = await uModel.findByIdAndUpdate(userId,{uUserName, uFullName, uBio}, {new: true});
-       } else {
-        let uploadPic = await cloudinary.uploader.upload(uProPic)
-        updatedInfo = await uModel.findByIdAndUpdate(userId, {uUserName, uFullName, uBio, uProPic: uploadPic.secure_url}, {new: true});
-       }
+        const userId = req.user._id; // from auth middleware
+        const { uUserName, uFullName, uBio } = req.body;
+        const uProPic = req.file;
 
-        res.status(200).json({Msg:"Updated infor"}, updatedInfo)
+        let updatedInfo;
+
+        if (!uProPic) {
+            updatedInfo = await uModel.findByIdAndUpdate(
+                userId,
+                { uUserName, uFullName, uBio },
+                { new: true }
+            );
+        } else {
+            let uploadPic = await cloudinary.uploader.upload(uProPic.path);
+            updatedInfo = await uModel.findByIdAndUpdate(
+                userId,
+                { uUserName, uFullName, uBio, uProPic: uploadPic.secure_url },
+                { new: true }
+            );
+        }
+
+        updatedInfo.uPassword = undefined;
+        res.status(200).json({ Msg: "Updated info", user: updatedInfo });
 
     } catch (error) {
-        res.status(500).json({Msg:"Failed to update info.", ERR: error.message})
+        res.status(500).json({ Msg: "Failed to update info.", ERR: error.message });
     }
-}
+};
 export const getProfile = async(req, res)=>{
     try {
         const userId = req.user._id || req.user.id;

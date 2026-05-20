@@ -5,6 +5,7 @@ import { allUsrMsgCtrl, msgSeenStatus, sndMsg, twoPartyMsgs } from "../Ctrls/Msg
 import multer from "multer";
 import fs from 'fs';
 import path from "path";
+import { uModel } from "../Models/theUSER.js";
 console.log("ROUTeS");
 
 const storage = multer.diskStorage({
@@ -22,14 +23,19 @@ export const userRoutes = Router()
 userRoutes.post("/create", (req, res, next) => {
     console.log("HIT /user/create"); // if this doesn't print, route is wrong
     next();
-}, upload.single("uProPic"), signUP);
+}, upload.single("uProPic"), upload.single("uProPic"), signUP);
 userRoutes.post('/login', logIn);
 userRoutes.post('/logout', MiddleChk, Logout);
-userRoutes.put("/update", MiddleChk, editInfo);
+userRoutes.put("/update", MiddleChk, upload.single("uProPic"), editInfo);
 userRoutes.get("/profile", MiddleChk, getProfile)
-userRoutes.get("/check-auth", MiddleChk, (req, res)=>(
-    res.status(200).json({Msg:"All are okay!"})
-))
+userRoutes.get("/check-auth", MiddleChk, async(req, res)=>{
+    try {
+        let user = await uModel.findById(req.user._id).select("-uPassword");
+        res.status(200).json({User: user})
+    } catch (error) {
+        res.status(500).json("AUTH-ERRMsg",error.message)
+    }
+})
 export const msgsRoutes = Router();
 msgsRoutes.get("/alluser", MiddleChk, allUsrMsgCtrl);
 msgsRoutes.get("/:id", MiddleChk, twoPartyMsgs);

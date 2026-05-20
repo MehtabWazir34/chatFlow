@@ -6,29 +6,37 @@ import AuthContext from "../Context";
 
 function Profile() {
   const { userAuth, editInfo } = useContext(AuthContext);
-  const [uFullName, setName] = useState(userAuth?.uFullName);
-  const [uUserName, setUserName] = useState(userAuth?.uUserName);
-  const [uBio, setBio] = useState(userAuth?.uBio);
-  const [uProPic, setPIC] = useState(userAuth?.uProPic);
+  const [uFullName, setName] = useState('');
+  const [uUserName, setUserName] = useState('');
+  const [uBio, setBio] = useState('');
+  const [uProPic, setPIC] = useState('');
   // const [user, setUser] = useState({});
+  useEffect(()=>{
+    const getME = async()=>{
 
-const saveChanges = async(a)=>{
-  a.preventDefault();
-  try {
-      if(!uProPic){
-        await editInfo({uFullName, uUserName, uBio })
+      if(userAuth){
+        setUserName(userAuth.uUserName || '')
+        setName(userAuth.uFullName || '')
+        setBio(userAuth.uBio || '')
+        setPIC(userAuth.uProPic || '')
       }
-      const reader = new FileReader();
-      reader.readAsDataURL(uProPic);
-      reader.onload = async()=>{
-        const base64Image = reader.result;
-        setPIC(base64Image);
-        await editInfo({uFullName, uUserName, uBio, uProPic})
+    }
+    getME()
+  }, [userAuth])
+  const saveChanges = async(a)=>{
+    a.preventDefault();
+    const myData = new FormData()
+    try {
+      myData.append("uUserName", uUserName)
+      myData.append("uFullName", uFullName)
+      myData.append("uBio", uBio)
+      if(uProPic){
+        myData.append('uProPic', uProPic)
       }
+      await editInfo(myData)
   } catch (error) {
-    console.log("ERR-EDITS", error.message);
-    
-  }
+    console.log("ERR-EDITS", error.message);  
+  } 
 }
 console.log("USER:", userAuth);
 
@@ -41,8 +49,8 @@ console.log("USER:", userAuth);
         <div className="flex items-center justify-center p-2 w-22 h-22 overflow-hidden rounded-full border border-amber-100 bg-blue-500">
           {
             uProPic ? (
-              <img src={URL.createObjectURL(uProPic)} alt="uProPic" className="w-full h-full " />
-            ) : <span className="text-4xl font-bold">{uFullName.toUpperCase().slice(0,1)}</span>
+              <img src={uProPic instanceof File ? URL.createObjectURL(uProPic) : uProPic} alt="uProPic" className="w-full h-full " />
+            ) : <span className="text-4xl font-bold">{uFullName.slice(0,1).toUpperCase()}</span>
           }
           </div>
         <label htmlFor="uProPic" className="cursor-pointer">

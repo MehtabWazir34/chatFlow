@@ -17,7 +17,11 @@ export const AuthProvider = ({children})=>{
                 socketConnection( data.user);
             }
         } catch (error) {
-            console.log("ERR-AUTH:", error.message);            
+            console.log("ERR-AUTH:", error.message);  
+            setUserAuth(null)
+            setToken(null)
+            localStorage.removeItem("token")
+            // delete API_INSTANCE.defaults.headers.common["Authorization"]          
         }   
     }
     const SIGNup = async(inData)=>{
