@@ -46,10 +46,10 @@ console.log("USER:", userAuth);
       <div className="w-5/6">
       <h2 className="text-xl font-semibold text-gray-700">Profile Details</h2>
       <div className="flex gap-2 place-items-center my-4">
-        <div className="flex items-center justify-center p-2 w-22 h-22 overflow-hidden rounded-full border border-amber-100 bg-blue-500">
+        <div className="flex items-center justify-center  w-22 h-22 overflow-hidden rounded-full border border-amber-100 bg-blue-500">
           {
             uProPic ? (
-              <img src={uProPic instanceof File ? URL.createObjectURL(uProPic) : uProPic} alt="uProPic" className="w-full h-full " />
+              <img src={uProPic instanceof File ? URL.createObjectURL(uProPic) : uProPic} alt="uProPic" className="w-full h-full rounded-full " />
             ) : <span className="text-4xl font-bold">{uFullName.slice(0,1).toUpperCase()}</span>
           }
           </div>

@@ -28,14 +28,15 @@ userRoutes.post('/login', logIn);
 userRoutes.post('/logout', MiddleChk, Logout);
 userRoutes.put("/update", MiddleChk, upload.single("uProPic"), editInfo);
 userRoutes.get("/profile", MiddleChk, getProfile)
-userRoutes.get("/check-auth", MiddleChk, async(req, res)=>{
+const chkAUTH = async(req, res)=>{
     try {
         let user = await uModel.findById(req.user._id).select("-uPassword");
-        res.status(200).json({User: user})
+        res.status(200).json({user})
     } catch (error) {
         res.status(500).json("AUTH-ERRMsg",error.message)
     }
-})
+}
+userRoutes.get("/check-auth", MiddleChk, chkAUTH)
 export const msgsRoutes = Router();
 msgsRoutes.get("/alluser", MiddleChk, allUsrMsgCtrl);
 msgsRoutes.get("/:id", MiddleChk, twoPartyMsgs);

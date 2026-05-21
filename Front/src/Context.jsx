@@ -14,8 +14,11 @@ export const AuthProvider = ({children})=>{
             let {data} = await API_INSTANCE.get("/user/check-auth");
             if(data){
                 setUserAuth(data.user)
+
                 socketConnection( data.user);
             }
+            console.log("DATA:", data);
+            
         } catch (error) {
             console.log("ERR-AUTH:", error.message);  
             setUserAuth(null)
@@ -66,9 +69,13 @@ export const AuthProvider = ({children})=>{
     }
     const editInfo = async(body)=>{
         try {
-            let resp = await API_INSTANCE.put('/user/update', body);
-            setUserAuth(resp.data.user || resp.user)
+            let resp = await API_INSTANCE.put('/user/update', body, {
+                headers:{ "Content-Type": "multipart/form-data"}
+            });
+            setUserAuth(resp.data.user)
             console.log("RES_EDIT;", resp.data);
+            console.log("RES_EDIT AXIOS;", API_INSTANCE.defaults.headers.common);
+
             // navigateTO('/')
         } catch (error) {
             console.log("ERR-EDIT", error.message);
@@ -84,12 +91,20 @@ export const AuthProvider = ({children})=>{
             setOnlineUsers(allUserIds);
         })
     })
-    useEffect(()=>{
-        if(token){
-            API_INSTANCE.defaults.headers.common["token"] = token
+   // Context.jsx
+useEffect(() => {
+    // const getME = ()=>{
+        console.log("TOKEN", token);
+        
+        // const storedToken = localStorage.getItem("token");
+        setToken(localStorage.getItem("token"));
+        if (token) {
+            API_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+            checkUserAuth();
         }
-        checkUserAuth();
-    }, []);
+    // }
+    // getME()
+}, []);
 
     const values = { API_INSTANCE, 
         onlineUser, userAuth, setUserAuth, socket, LogOut , editInfo, getProfile, LogIN, SIGNup

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import AuthContext from '../Context'
 
 function LeftSidebar({selectedUser, setUser}) {
     const users = [
@@ -9,8 +11,14 @@ function LeftSidebar({selectedUser, setUser}) {
         { id: 4, name:"Albaik ", msg:"No", },
         { id: 5, name:"Waz", msg:"Really?", },
     ]
-
+    let navigateTO = useNavigate()
+    const { LogOut } = useContext(AuthContext)
     const [optsDisplay, setOpts] = useState(false)
+    const LogOUT = async(a)=>{
+        a.preventDefault();
+        await LogOut
+        navigateTO('/login')
+    }
   return (
         <div className={`flex flex-col w-[320px] border-r border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
             {/* Hdr */}
@@ -36,7 +44,7 @@ function LeftSidebar({selectedUser, setUser}) {
               <div className="flex flex-col absolute left-35  top-16 bg-amber-50/70 rounded-md px-2 py-6 max-w-1/5 h-40 text-gray-700 inset-0 z-21">
                   <Link to={'/profile'} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Edit Profile</Link>
                   <span className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Change Mode</span>
-                  <span className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Logout</span>
+                  <button onClick={LogOUT} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Logout</button>
               </div>
             )
           }

@@ -5,8 +5,8 @@ import cloudinary from "../Cnfg/Cloudinary.js";
 import  dotenv  from "dotenv";
 import { log } from "console";
 dotenv.config();
-const genToken =(userId)=>{
-    const token = jwt.sign({userId}, process.env.myJWTScrt)
+const genToken =(id)=>{
+    const token = jwt.sign({ id }, process.env.myJWTScrt, {expiresIn:'7d'})
     return token;
 } 
 // Add this temporarily to test your cloudinary config
@@ -102,14 +102,14 @@ export const editInfo = async (req, res) => {
         let updatedInfo;
 
         if (!uProPic) {
-            updatedInfo = await uModel.findByIdAndUpdate(
+            updatedInfo = await uModel.findOneAndUpdate(
                 userId,
                 { uUserName, uFullName, uBio },
                 { new: true }
             );
         } else {
             let uploadPic = await cloudinary.uploader.upload(uProPic.path);
-            updatedInfo = await uModel.findByIdAndUpdate(
+            updatedInfo = await uModel.findOneAndUpdate(
                 userId,
                 { uUserName, uFullName, uBio, uProPic: uploadPic.secure_url },
                 { new: true }
@@ -117,10 +117,10 @@ export const editInfo = async (req, res) => {
         }
 
         updatedInfo.uPassword = undefined;
-        res.status(200).json({ Msg: "Updated info", user: updatedInfo });
+        return res.status(200).json({ Msg: "Updated info", user: updatedInfo });
 
     } catch (error) {
-        res.status(500).json({ Msg: "Failed to update info.", ERR: error.message });
+        return res.status(500).json({ Msg: "Failed to update info.", ERR: error.message });
     }
 };
 export const getProfile = async(req, res)=>{

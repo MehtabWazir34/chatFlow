@@ -12,7 +12,7 @@ function LoginToAccount() {
     const [uPassword, setPassword] = useState('');
     const [uBio, setBio] = useState('');
     const [uProPic, setProPic] = useState('');
-    const [CurrentState, setCurrentState] = useState('signUp');
+    const [CurrentState, setCurrentState] = useState('login');
     const [ShowBio, setShowBio] = useState(false);
     let navigateTO = useNavigate();
 
