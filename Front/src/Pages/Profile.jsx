@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Logo } from "../Parts/Logo"
 import { API_INSTANCE } from "../Utls/API";
 import { useContext } from "react";
-import AuthContext from "../Context";
+import AuthContext from "../Cntxts/Context";
 
 function Profile() {
   const { userAuth, editInfo } = useContext(AuthContext);

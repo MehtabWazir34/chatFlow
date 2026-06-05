@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import {API_INSTANCE} from './Utls/API'
+import {API_INSTANCE} from '../Utls/API'
 import { io } from 'socket.io-client'
 const AuthContext = createContext();
 
@@ -14,7 +14,6 @@ export const AuthProvider = ({children})=>{
             let {data} = await API_INSTANCE.get("/user/check-auth");
             if(data){
                 setUserAuth(data.user)
-
                 socketConnection( data.user);
             }
             console.log("DATA:", data);

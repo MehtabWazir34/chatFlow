@@ -4,7 +4,7 @@ import { RiVideoAddFill} from 'react-icons/ri'
 import {PiPhoneCallFill} from 'react-icons/pi'
 function OpenChat({selectedUser, setUser}) {
   return (
-    <div className="flex flex-1 flex-col border-r border-gray-400">
+    <div className=" flex-1 flex-col h-screen overflow-y-scroll border-r border-gray-400">
       {/* Hdr */}
       <div className="flex justify-between h-14 p-4 text-gray-700">
         {/* Left */}
@@ -25,7 +25,7 @@ function OpenChat({selectedUser, setUser}) {
             <button className="text-xl font-semibold cursor-pointer"><CgMenuRight/></button>
         </div>
       </div>
-    <hr className='w-full  border-b border-gray-400 mt-5 bg-gray-500 rounded-full opacity-50' />
+    <hr className='w-full overflow-y-hidden border-b border-gray-400 mt-5 bg-gray-500 rounded-full opacity-50' />
 
          {/* Messages */}
         <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
@@ -76,7 +76,7 @@ function OpenChat({selectedUser, setUser}) {
 
         {/* Message Input */}
         <div className=" ">
-          <div className="flex items-center gap-4  border-y border-gray-400 px-5 py-3">
+          <div className="flex items-center gap-x-4 border-y border-gray-400 px-5 py-3">
             
             <button className="text-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-1 cursor-pointer transition">
               +

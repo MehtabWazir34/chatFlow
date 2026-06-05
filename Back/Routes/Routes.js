@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { editInfo, getProfile, logIn, Logout, signUP } from "../Ctrls/User.js";
+import { editInfo, getAll, getProfile, logIn, Logout, signUP } from "../Ctrls/User.js";
 import { MiddleChk } from "../MdlWre/MiddleChk.js";
 import { allUsrMsgCtrl, msgSeenStatus, sndMsg, twoPartyMsgs } from "../Ctrls/Msg.js";
 import multer from "multer";
 import fs from 'fs';
 import path from "path";
 import { uModel } from "../Models/theUSER.js";
+import { useRouteError } from "react-router-dom";
 console.log("ROUTeS");
 
 const storage = multer.diskStorage({
@@ -37,8 +38,10 @@ const chkAUTH = async(req, res)=>{
     }
 }
 userRoutes.get("/check-auth", MiddleChk, chkAUTH)
+userRoutes.get("/all", MiddleChk, getAll)
+
 export const msgsRoutes = Router();
-msgsRoutes.get("/alluser", MiddleChk, allUsrMsgCtrl);
+msgsRoutes.get("/users", MiddleChk, allUsrMsgCtrl);
 msgsRoutes.get("/:id", MiddleChk, twoPartyMsgs);
 msgsRoutes.put("/msgseen-mark/:id", MiddleChk, msgSeenStatus);
 msgsRoutes.post("/send-msg/:id", MiddleChk, sndMsg);

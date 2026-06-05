@@ -133,3 +133,11 @@ export const getProfile = async(req, res)=>{
         return res.json({Msg:"Failed to get Profile.", ERR: error.message})
     }
 }
+export const getAll = async(req, res)=>{
+    try {
+        const users = await uModel.find();
+        res.status(200).json({Msg:"Got All", users})
+    } catch (error) {
+        return res.status(500).json({Msg:"Failed to getAll", ERR: error.message})
+    }
+}

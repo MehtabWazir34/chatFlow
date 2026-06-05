@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Logo } from "../Parts/Logo";
 import { API_INSTANCE } from "../Utls/API";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../Context";
+import AuthContext from "../Cntxts/Context";
 function LoginToAccount() {
 
     const {  LogIN, SIGNup } = useContext(AuthContext);

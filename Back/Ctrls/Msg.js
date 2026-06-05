@@ -15,7 +15,7 @@ export const allUsrMsgCtrl = async(req, res)=>{
             }
         });
         await Promise.all(prms);
-        res.status(200).json({Msg:"Success", fltrUsers, unseenMsgs})
+        res.status(200).json({Msg:"Success", success:true, users:fltrUsers, unseenMsgs})
     } catch (error) {
         res.status(401).json({Msg:"Failed msg!", Err:error.message})
     }
@@ -33,7 +33,7 @@ export const twoPartyMsgs = async(req, res)=>{
         ]});
         await msgModel.updateMany({sndrId: otherUsrId, rcvrId: myId}, {msgSeen: true});
 
-        res.status(200).json({Msg:"Success", bothSideMsgs})
+        res.status(200).json({Msg:"Success", success:true,  chat:bothSideMsgs})
     } catch (error) {
         res.status(401).json({Msg:"Failed msg!", Err:error.message})
         
@@ -57,7 +57,7 @@ export const sndMsg = async(req, res)=>{
         if(rcvrSKTId){
             socketio.to(rcvrSKTId).emit("newMsg", newMsg);
         }
-        res.status(200).json({Msg:"Msg send!", newMsg: newMsg, msgImg: imgURL})
+        res.status(200).json({Msg:"Msg send!", success: true, newMsg, msgImg: imgURL})
     } catch (error) {
         res.json({Msg:"Failed msg snd", ERR: error.message})
     }
@@ -67,7 +67,7 @@ export const msgSeenStatus = async(req, res)=>{
     try {
         const {id} = req.params;
         await msgModel.findByIdAndUpdate(id, {msgSeen: true}, {new: true});
-        res.status(200).json({Msg:"Seen updated"})
+        res.status(200).json({Msg:"Seen updated", success: true})
     } catch (error) {
         res.status(401).json({Msg:"Failed seen updates", ERR: error.message})
     }

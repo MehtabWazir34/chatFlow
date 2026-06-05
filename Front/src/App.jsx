@@ -4,15 +4,16 @@ import Home from './Pages/Home'
 import LoginToAccount from './Pages/Login'
 import Profile from './Pages/Profile'
 import { useContext } from 'react'
-import AuthContext from './Context'
+import AuthContext from './Cntxts/Context'
 // import { AuthContext } from './Context.jsx'
 function App(){
   const { userAuth } = useContext(AuthContext)
   return(
     <>
-    <main className="w-full min-h-screen bg-center bg-black/30 bg-[url('https://img.magnific.com/premium-photo/chat-app-icon-logo-design_113255-191767.jpg')] bg-contain bg-no-repeat flex justify-center items-center ">
+    <main className="w-full h-screen bg-center bg-black/30 
+    flex justify-center items-center ">
+      {/* bg-[url('https://img.magnific.com/premium-photo/chat-app-icon-logo-design_113255-191767.jpg')] bg-contain bg-no-repeat  */}
     
-
     <Routes>
         <Route path='/' element={ <Home/> } />
         <Route path='/profile' element={ <Profile/> } />
