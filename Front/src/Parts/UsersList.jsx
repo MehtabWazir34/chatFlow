@@ -4,11 +4,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import AuthContext from '../Cntxts/Context'
 import { useEffect } from 'react'
 import { API_INSTANCE } from '../Utls/API'
+import MsgContext from '../Cntxts/MsgsCntxt'
 
-function LeftSidebar({selectedUser, setUser}) {
+function LeftSidebar() {
 
     let navigateTO = useNavigate()
-    const { LogOut } = useContext(AuthContext)
+    const { LogOut, onlineUsers } = useContext(AuthContext)
+    const { Users, msgs, setMsgs, unseenMsgs, setUnseenMsgs, sendMsg, selectedUser, setSelectedUser } = useContext(MsgContext)
+
     const [optsDisplay, setOpts] = useState(false)
     const [allUsers, setAllUsers] = useState([])
     const LogOUT = async(a)=>{
@@ -17,27 +20,23 @@ function LeftSidebar({selectedUser, setUser}) {
         navigateTO('/login')
     }
     useEffect(()=>{
-        // a.preventDefault();
         const getAll = async()=>{
             try {
-                let res = await API_INSTANCE.get("/user/all");
-                let flrtrdUsers = res.data.users
-                setAllUsers(flrtrdUsers.filter((alUsrs)=> alUsrs._id !== selectedUser._id))
-                // console.log("ALLUSERS:", res.data);
+                // let res = await API_INSTANCE.get("/user/all");
+                // let flrtrdUsers = res.data.users
+                // setAllUsers(flrtrdUsers.filter((alUsrs)=> alUsrs._id !== selectedUser._id))
+                setAllUsers(Users)
             } catch (error) {
                 console.log("GETAll Failed!", error.message);
             }
         }
         getAll();
-    })
+    },[Users])
     const [srchUserResult, setSearch] = useState({});
     const [srchValue, setSearchValue] = useState('');
     useEffect(()=>{
-        // a.preventDefault();
         const getSearch = async()=>{
-
             let srchRslt = allUsers.filter((user)=> user.uFullName.toLowerCase().includes(srchValue.toLowerCase()));
-        // if(srchValue.toLowerCase().includes(allUsers.uFullName || allUsers.uUserName))
             setSearch(srchRslt)
         if(srchUserResult) ()=> setAllUsers(null)
         }
@@ -81,7 +80,7 @@ function LeftSidebar({selectedUser, setUser}) {
         <div className="flex-1 h-full flex-col overflow-y-scroll px-3 pb-4 space-y-2">
             { !srchValue ?
                 allUsers.map((ech, idx)=>(
-                    <div onClick={()=> {setUser(ech)}} key={idx} className='flex gap-x-2 place-items-start cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full'>
+                    <div  key={idx} className='flex gap-x-2 place-items-start cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full'>
                         <div className='flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100'>
                             {
                                 ech.uProPic ? <img src={ech.uProPic} alt={ech.uFullName} className='w-full h-full rounded-full' /> :
@@ -90,7 +89,10 @@ function LeftSidebar({selectedUser, setUser}) {
                         </div>
                         <div className='flex flex-col justify-start'>
                             <h2 className='font-semibold text-lg gap-1 flex items-center'>{ech.uFullName}
-                            <span className='w-3 h-3 rounded-full z-10 border border-yellow-400 bg-green-600 animate-pulse '></span>
+                                {
+                                    onlineUsers.includes(ech.id) &&
+                                    <span className='w-3 h-3 rounded-full z-10 border border-yellow-400 bg-green-600 animate-pulse '></span>
+                                }
                             </h2>
                             {/* <p className='text-xs '>{ech.msg}</p> */}
                         </div>
