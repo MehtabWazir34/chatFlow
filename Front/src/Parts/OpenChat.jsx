@@ -2,7 +2,17 @@ import { MdFeaturedVideo, MdSpatialAudioOff} from 'react-icons/md'
 import { CgMenuRight } from "react-icons/cg";
 import { RiVideoAddFill} from 'react-icons/ri'
 import {PiPhoneCallFill} from 'react-icons/pi'
-function OpenChat({selectedUser, setUser}) {
+import { useContext, useState } from 'react';
+import MsgContext from '../Cntxts/MsgsCntxt';
+import AuthContext from '../Cntxts/Context';
+function OpenChat() {
+
+  const {Users, Msgs, setMsgs, unseenMsgs, setUnseenMsgs, targetUser, setTargetUser, sendMsg
+ } = useContext(MsgContext);
+
+ const {onlineUsers} = useContext(AuthContext)
+  const [msgTxts, setMsgTxts] = useState("");
+
   return (
     <div className=" flex-1 flex-col h-screen overflow-y-scroll border-r border-gray-400">
       {/* Hdr */}
@@ -84,11 +94,13 @@ function OpenChat({selectedUser, setUser}) {
 
             <input
               type="text"
+              value={msgTxts}
+              onChange={(a)=> setMsgTxts(a.target.value)}
               placeholder="Type your message..."
               className="flex-1 bg-transparent outline-none text-gray-700 placeholder:text-gray-500"
             />
 
-            <button className="bg-blue-600 hover:bg-blue-500 transition px-6 py-3 rounded-xl font-medium">
+            <button  className="bg-blue-600 hover:bg-blue-500 transition px-6 py-3 rounded-xl font-medium">
               Send
             </button>
           </div>

@@ -6,13 +6,7 @@ import { useEffect } from 'react'
 import { API_INSTANCE } from '../Utls/API'
 
 function LeftSidebar({selectedUser, setUser}) {
-    const users = [
-        { id: 2, name:"Wazir Khan", msg:"6ry ye?", },
-        { id: 1, name:"Aqib", msg:"?",},
-        { id: 3, name:"Khanii", msg:"Hmm...", },
-        { id: 4, name:"Albaik ", msg:"No", },
-        { id: 5, name:"Waz", msg:"Really?", },
-    ]
+
     let navigateTO = useNavigate()
     const { LogOut } = useContext(AuthContext)
     const [optsDisplay, setOpts] = useState(false)
@@ -27,7 +21,8 @@ function LeftSidebar({selectedUser, setUser}) {
         const getAll = async()=>{
             try {
                 let res = await API_INSTANCE.get("/user/all");
-                setAllUsers(res.data.users)
+                let flrtrdUsers = res.data.users
+                setAllUsers(flrtrdUsers.filter((alUsrs)=> alUsrs._id !== selectedUser._id))
                 // console.log("ALLUSERS:", res.data);
             } catch (error) {
                 console.log("GETAll Failed!", error.message);
@@ -48,12 +43,7 @@ function LeftSidebar({selectedUser, setUser}) {
         }
         getSearch();
     },[allUsers, srchUserResult, srchValue])
-    // console.log("SRch:", srchValue);
-    // console.log("SRchRslt:", srchUserResult);
-    
-    // const srchResult = async()=>{
-    //     if(srchValue.includes(allUsers))
-    // }
+   
   return (
         <div className={`flex flex-col h-full w-[320px] border-r border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
             {/* Hdr */}

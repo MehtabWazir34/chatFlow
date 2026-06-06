@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({children})=>{
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [userAuth, setUserAuth] = useState(null);
-    const [onlineUser, setOnlineUsers] = useState([]);
+    const [onlineUsers, setOnlineUsers] = useState([]);
     const [socket, setSocket] = useState(null)
 
     const checkUserAuth = async()=>{
@@ -106,9 +106,9 @@ useEffect(() => {
 }, []);
 
     const values = { API_INSTANCE, 
-        onlineUser, userAuth, setUserAuth, socket, LogOut , editInfo, getProfile, LogIN, SIGNup
+        onlineUsers, userAuth, setUserAuth, socket, LogOut , editInfo, getProfile, LogIN, SIGNup
     }
-    return(
+    return (
         <AuthContext.Provider value={values}>
             {children}
         </AuthContext.Provider>

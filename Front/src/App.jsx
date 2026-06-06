@@ -6,6 +6,7 @@ import Profile from './Pages/Profile'
 import { useContext } from 'react'
 import AuthContext from './Cntxts/Context'
 // import { AuthContext } from './Context.jsx'
+import Toaster from 'so'
 function App(){
   const { userAuth } = useContext(AuthContext)
   return(
@@ -13,7 +14,7 @@ function App(){
     <main className="w-full h-screen bg-center bg-black/30 
     flex justify-center items-center ">
       {/* bg-[url('https://img.magnific.com/premium-photo/chat-app-icon-logo-design_113255-191767.jpg')] bg-contain bg-no-repeat  */}
-    
+      <To
     <Routes>
         <Route path='/' element={ <Home/> } />
         <Route path='/profile' element={ <Profile/> } />

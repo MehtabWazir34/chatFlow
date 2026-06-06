@@ -1,58 +1,54 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import AuthContext from "./Context";
 import { API_INSTANCE } from "../Utls/API";
 
-export const msgContext = createContext();
+const MsgContext = createContext();
 
-const chatContextProvider = ({children})=>{
-
-    const [Users, setUsers] = useState([]);
+export const MsgProvider = ({children})=>{
     const [unseenMsgs, setUnseenMsgs] = useState({});
-    const [Msgs, setMsgs] = useState([]);
-    const [targetUser, setTargetUser] = useState(null);
-    const {socket} = AuthContext();
+    const [Users, setUsers] = useState([]);
+    const [msgs, setMsgs] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const {socket} = useContext(AuthContext);
 
-
-    const getUsers = async()=>{
+    const getAllUsers = async()=>{
         try {
-            const {data } = await API_INSTANCE.get('/msgs/users');
+            const {data} = await API_INSTANCE.get("msg/users/");
             if(data.success){
                 setUsers(data.users)
-                setUnseenMsgs(data.unseenMsgs)
+                setUnseenMsgs(data.unseenMsgs);
             }
         } catch (error) {
-            console.log("GEtUSERS-chatContext!", error);
+            console.log("ERR_ALLUSRs", error.message);
             
         }
-    };
-    const getChat = async(usrId)=>{
+    }
+
+    const getSelectedUserMsgs = async(userId)=>{
         try {
-            const {data} = await API_INSTANCE.get(`/msgs/${usrId}`);
+            const {data} = await API_INSTANCE.post(`/msg/${userId}`);
             if(data.success){
                 setMsgs(data.chat)
             }
         } catch (error) {
-            console.log("GEtChat-chatContext!", error);        
+            console.log("MSG-Send", error.message);
         }
-    };
-    const sendMsg = async(newMsgData)=>{
+    }
+    const sendMsg = async(msgData)=>{
         try {
-            const {data} = await API_INSTANCE.post(`/msgs/send-msg/${targetUser._id}`, newMsgData);
+            const {data} = await API_INSTANCE.post(`/msg/send-msg/${selectedUser._id}`, msgData);
             if(data.success){
-                setMsgs((preChat)=> [...preChat, data.newMsg])
+                setMsgs((preMsgs)=> [...preMsgs, data.newMsg])
             }
         } catch (error) {
-            console.log("sndMsg-chatContext!", error);        
-
+            console.log("MSG-Send", error.message);
         }
     }
-    const values = {
-
-    }
+    const values = {}
     return (
-        <chatContextProvider.Provider value={values} >
+        <MsgContext.Provider value={values}>
             {children}
-        </chatContextProvider.Provider>
+        </MsgContext.Provider>
     )
 }
-export default chatContextProvider;
+export default MsgContext;
