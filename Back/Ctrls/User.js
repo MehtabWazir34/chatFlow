@@ -49,7 +49,7 @@ export const signUP = async (req, res) => {
         let token = genToken(addUser._id);
         addUser.uPassword = undefined;
 
-        return res.status(200).json({ Msg: "Created", addUser, token });
+        return res.status(200).json({ Msg: "Created", success: true, userCreated:addUser, token });
 
     } catch (error) {
         res.status(500).json({ Msg: "Failed to create account", ERR: error.message });
@@ -70,8 +70,9 @@ export const logIn = async(req, res)=>{
         }
         let token = genToken(user._id);
         user.uPassword = undefined;
-        res.status(200).json({
+        return res.status(200).json({
             Msg:"Logged In",
+            success: true,
             user,
             token
         })

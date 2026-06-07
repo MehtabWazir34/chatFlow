@@ -19,7 +19,10 @@ function LoginToAccount() {
     const handleLogin = async (a) => {
         a.preventDefault();
         try {
-            await LogIN({uEmail, uPassword})
+            const myFormData = new FormData();
+            myFormData.append("uEmail", uEmail)
+            myFormData.append("uPassword", uPassword)
+            await LogIN(myFormData)
             navigateTO("/")
         } catch (error) {
             console.log("ERR:", error.message);
@@ -43,8 +46,8 @@ function LoginToAccount() {
                     myFormData.append("uProPic", uProPic);
                 }
                 await SIGNup(myFormData);
-                navigateTO("/")
             }
+            navigateTO("/")
         } catch (error) {
             console.log({ "SignUP Failed!": error.message });
         }

@@ -1,117 +1,118 @@
 import { createContext, useEffect, useState } from "react";
-import {API_INSTANCE} from '../Utls/API'
-import { io } from 'socket.io-client'
+import { API_INSTANCE } from '../Utls/API';
+import { io } from 'socket.io-client';
+import { toast } from "sonner";
+
 const AuthContext = createContext();
 
-export const AuthProvider = ({children})=>{
+export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [userAuth, setUserAuth] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
-    const [socket, setSocket] = useState(null)
+    const [socket, setSocket] = useState(null);
 
-    const checkUserAuth = async()=>{
+    const checkUserAuth = async () => {
         try {
-            let {data} = await API_INSTANCE.get("/user/check-auth");
-            if(data){
-                setUserAuth(data.user)
-                socketConnection( data.user);
+            let { data } = await API_INSTANCE.get("/user/check-auth");
+            if (data) {
+                setUserAuth(data.user);
+                socketConnection(data.user);
             }
-            console.log("DATA:", data);
-            
         } catch (error) {
-            console.log("ERR-AUTH:", error.message);  
-            setUserAuth(null)
-            setToken(null)
-            localStorage.removeItem("token")
-            // delete API_INSTANCE.defaults.headers.common["Authorization"]          
-        }   
-    }
-    const SIGNup = async(inData)=>{
-        try {
-            let {data} = await API_INSTANCE.post("/user/create", inData);
-            setUserAuth(data.user);
-            setToken(data.token);
-            API_INSTANCE.defaults.headers.common["token"] = data.token
-            localStorage.setItem("token", data.token);
-            console.log("SIGNUP_data", data);
-        } catch (error) {
-            console.log("SIGNUP_ERR:", error.message);  
+            console.log("ERR-AUTH:", error.message);
+            setUserAuth(null);
+            setToken(null);
+            localStorage.removeItem("token");
+            delete API_INSTANCE.defaults.headers.common["Authorization"];
         }
-    }
-    const LogIN = async(inData)=>{
+    };
+
+    const SIGNup = async (myFormData) => {
         try {
-            let {data} = await API_INSTANCE.post("/user/login", inData);
-            setUserAuth(data.user);
-            setToken(data.token);
-            API_INSTANCE.defaults.headers.common["token"] = data.token
-            localStorage.setItem("token", data.token);
-            
+            let { data } = await API_INSTANCE.post("/user/create", myFormData);
+            if (data.success) {
+                setUserAuth(data.user);
+                setToken(data.token);
+                API_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+                localStorage.setItem("token", data.token);
+                toast.success("Account Created");
+            }
+        } catch (error) {
+            toast.error("Signup failed");
+            console.log("SIGNUP_ERR:", error.message);
+        }
+    };
+
+    const LogIN = async (myFormData) => {
+        try {
+            let { data } = await API_INSTANCE.post("/user/login", myFormData);
+            if (data.success) {
+                setUserAuth(data.user);
+                setToken(data.token);
+                API_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
+                localStorage.setItem("token", data.token);
+                toast.success("Logged In");
+            }
         } catch (error) {
             console.log("ERR_LOGIN", error.message);
-            
+            toast.error("Login failed");
         }
-    }
-    const getProfile = async()=>{
-        if(userAuth){
-            let rsp = await API_INSTANCE.get('/user/profile');
-            console.log("PROFILE:", rsp.data);  
-        }
-    }
-    const LogOut = ()=>{
-        localStorage.removeItem("token")
+    };
+
+    const LogOut = () => {
+        localStorage.removeItem("token");
         setToken(null);
-        delete API_INSTANCE.defaults.headers.common["token"];
+        delete API_INSTANCE.defaults.headers.common["Authorization"];
         setUserAuth(null);
         setOnlineUsers([]);
-        socket.disconnect();
-        // navigateTO('/login')
-    }
-    const editInfo = async(body)=>{
+        if (socket) {
+            socket.disconnect();
+            setSocket(null);
+        }
+    };
+
+    const editInfo = async (body) => {
         try {
             let resp = await API_INSTANCE.put('/user/update', body, {
-                headers:{ "Content-Type": "multipart/form-data"}
+                headers: { "Content-Type": "multipart/form-data" }
             });
-            setUserAuth(resp.data.user)
-            console.log("RES_EDIT;", resp.data);
-            console.log("RES_EDIT AXIOS;", API_INSTANCE.defaults.headers.common);
-
-            // navigateTO('/')
+            setUserAuth(resp.data.user);
+            toast.success("Profile updated");
         } catch (error) {
             console.log("ERR-EDIT", error.message);
+            toast.error("Update failed");
         }
-    }
-    const socketConnection = ((userData)=>{
-        if(!userData || socket?.connected) return;
+    };
+
+    const socketConnection = (userData) => {
+        if (!userData || socket?.connected) return;
         const newSocket = io(import.meta.env.VITE_API_URL, {
-            query: { userId: userData._id}
+            query: { userId: userData._id }
         });
-        setSocket(newSocket.connect());
-        newSocket.on("getOnlineUsers", (allUserIds)=>{
+        setSocket(newSocket); // ✅ not newSocket.connect()
+        newSocket.on("getOnlineUsers", (allUserIds) => {
             setOnlineUsers(allUserIds);
-        })
-    })
-   // Context.jsx
-useEffect(() => {
-    // const getME = ()=>{
-        console.log("TOKEN", token);
-        
-        // const storedToken = localStorage.getItem("token");
-        setToken(localStorage.getItem("token"));
-        if (token) {
-            API_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        });
+    };
+
+    useEffect(() => {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            API_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
             checkUserAuth();
         }
-    // }
-    // getME()
-}, []);
+    }, []);
 
-    const values = { API_INSTANCE, 
-        onlineUsers, userAuth, setUserAuth, socket, LogOut , editInfo, getProfile, LogIN, SIGNup
-    }
+    const values = {
+        onlineUsers, userAuth, setUserAuth,
+        socket, LogOut, editInfo, LogIN, SIGNup
+    };
+
     return (
         <AuthContext.Provider value={values}>
             {children}
         </AuthContext.Provider>
-    )
-}
+    );
+};
+
 export default AuthContext;

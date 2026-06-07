@@ -7,10 +7,11 @@ import MsgContext from '../Cntxts/MsgsCntxt';
 import AuthContext from '../Cntxts/Context';
 function OpenChat() {
 
-  const {Users, Msgs, setMsgs, unseenMsgs, setUnseenMsgs, targetUser, setTargetUser, sendMsg
- } = useContext(MsgContext);
+//   const {Users, Msgs, setMsgs, unseenMsgs, setUnseenMsgs, selectedUser, setTargetUser, sendMsg
+//  } = useContext(MsgContext);
 
  const {onlineUsers} = useContext(AuthContext)
+ const { selectedUser } = useContext(MsgContext)
   const [msgTxts, setMsgTxts] = useState("");
 
   return (
@@ -19,12 +20,17 @@ function OpenChat() {
       <div className="flex justify-between h-14 p-4 text-gray-700">
         {/* Left */}
         <div className="flex gap-3">
-            <div className="rounded-full w-12 h-12 justify-center bg-blue-700/80 text-gray-100 flex items-center">
-                    <h2 className="text-xl font-bold">MW</h2>
+            <div className="rounded-full w-12 h-12 overflow-hidden justify-center bg-blue-700/80 text-gray-100 flex items-center">
+                    {
+                      // selectedUser?.uProPic ? <img src={selectedUser.uProPic} alt={selectedUser.uFullName} className='w-full h-full rounded-full' /> :
+                      <h2 className="text-xl font-bold">
+                        {/* {selectedUser?.uFullName.slice(0,1)} */}
+                        </h2>
+                    }
             </div>
             <div >
-                    <h2 className="text-2xl font-semibold">WazMEh</h2>
-                    <p className="text-sm text-green-500 ">Online </p>
+                    <h2 className="text-2xl font-semibold">fghh</h2>
+                    {/* <p className="text-sm text-green-500 ">{onlineUsers.includes(selectedUser._id) ? 'connected' : 'disconnected'} </p> */}
             </div>
         </div>
 

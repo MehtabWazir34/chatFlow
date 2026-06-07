@@ -10,12 +10,12 @@ export const MsgProvider = ({children})=>{
     const [Users, setUsers] = useState([]);
     const [msgs, setMsgs] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const {socket} = useContext(AuthContext);
+    const {socket, userAuth} = useContext(AuthContext);
 
     const getAllUsers = async()=>{
         try {
-            const {data} = await API_INSTANCE.get("msg/users/");
-            if(data.success){
+            const {data} = await API_INSTANCE.get("/msgs/users");
+            if(data){
                 setUsers(data.users)
                 setUnseenMsgs(data.unseenMsgs);
             }
@@ -25,9 +25,14 @@ export const MsgProvider = ({children})=>{
         }
     }
 
+    useEffect(()=>{
+        if(userAuth){
+            getAllUsers();
+        }
+    }, [userAuth])
     const getSelectedUserMsgs = async(userId)=>{
         try {
-            const {data} = await API_INSTANCE.post(`/msg/${userId}`);
+            const {data} = await API_INSTANCE.get(`/msgs/${userId}`);
             if(data.success){
                 setMsgs(data.chat)
             }
@@ -37,7 +42,7 @@ export const MsgProvider = ({children})=>{
     }
     const sendMsg = async(msgData)=>{
         try {
-            const {data} = await API_INSTANCE.post(`/msg/send-msg/${selectedUser._id}`, msgData);
+            const {data} = await API_INSTANCE.post(`/msgs/send-msg/${selectedUser._id}`, msgData);
             if(data.success){
                 setMsgs((preMsgs)=> [...preMsgs, data.newMsg])
                 toast.success("Msg sent")
@@ -57,7 +62,7 @@ export const MsgProvider = ({children})=>{
                 if(selectedUser && newMsg.sndrId === selectedUser._id){
                     newMsg.msgSeen = true;
                     setMsgs((preMsgs)=> [...preMsgs, newMsg]);
-                    API_INSTANCE.put(`/msg/msgseen-mark/${newMsg._id}`)
+                    API_INSTANCE.put(`/msgs/msgseen-mark/${newMsg._id}`)
                 } 
                 // if slctduser chat is not open
                 else {
@@ -79,11 +84,23 @@ export const MsgProvider = ({children})=>{
     }
 
     useEffect(()=>{
+        if(selectedUser){
+            getSelectedUserMsgs(selectedUser._id)
+            if(unseenMsgs[selectedUser._id]){
+                setUnseenMsgs((preMsgs)=>{
+                    let updateSeen = {...preMsgs};
+                    delete updateSeen[selectedUser._id];
+                    return updateSeen
+                })
+            }
+        }
+    }, [selectedUser]);
+    useEffect(()=>{
         getInstantLiveMsg();
         return ()=> getOffMsg();
     }, [socket, selectedUser])
 
-    const values = {
+    const values = { getAllUsers,
         Users, msgs, setMsgs, unseenMsgs, setUnseenMsgs, sendMsg, selectedUser, setSelectedUser
     }
     return (

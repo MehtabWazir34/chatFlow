@@ -7,120 +7,94 @@ import { API_INSTANCE } from '../Utls/API'
 import MsgContext from '../Cntxts/MsgsCntxt'
 
 function LeftSidebar() {
+    const navigateTo = useNavigate();
+    const { LogOut, onlineUsers } = useContext(AuthContext);
+    const { Users, unseenMsgs, setUnseenMsgs, selectedUser, setSelectedUser } = useContext(MsgContext);
 
-    let navigateTO = useNavigate()
-    const { LogOut, onlineUsers } = useContext(AuthContext)
-    const { Users, msgs, setMsgs, unseenMsgs, setUnseenMsgs, sendMsg, selectedUser, setSelectedUser } = useContext(MsgContext)
-
-    const [optsDisplay, setOpts] = useState(false)
-    const [allUsers, setAllUsers] = useState([])
-    const LogOUT = async(a)=>{
-        a.preventDefault();
-        await LogOut
-        navigateTO('/login')
-    }
-    useEffect(()=>{
-        const getAll = async()=>{
-            try {
-                // let res = await API_INSTANCE.get("/user/all");
-                // let flrtrdUsers = res.data.users
-                // setAllUsers(flrtrdUsers.filter((alUsrs)=> alUsrs._id !== selectedUser._id))
-                setAllUsers(Users)
-            } catch (error) {
-                console.log("GETAll Failed!", error.message);
-            }
-        }
-        getAll();
-    },[Users])
-    const [srchUserResult, setSearch] = useState({});
+    const [optsDisplay, setOpts] = useState(false);
     const [srchValue, setSearchValue] = useState('');
-    useEffect(()=>{
-        const getSearch = async()=>{
-            let srchRslt = allUsers.filter((user)=> user.uFullName.toLowerCase().includes(srchValue.toLowerCase()));
-            setSearch(srchRslt)
-        if(srchUserResult) ()=> setAllUsers(null)
-        }
-        getSearch();
-    },[allUsers, srchUserResult, srchValue])
-   
-  return (
-        <div className={`flex flex-col h-full w-[320px] border-r border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
-            {/* Hdr */}
+
+    const filteredUsers = srchValue
+        ? Users.filter((user) =>
+            user.uFullName.toLowerCase().includes(srchValue.toLowerCase()))
+        : Users;
+
+    const LogOUT = async (a) => {
+        a.preventDefault();
+        await LogOut();
+        navigateTo('/login');
+    };
+
+    return (
+        <div className={`flex flex-col h-full w-[320px] pr-8 border-r border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
+            {/* Header */}
             <div className='w-full flex justify-between items-center p-4'>
-                {/* LeftLogo */}
                 <div className='flex flex-col'>
                     <h2 className='text-blue-900/80 text-2xl font-bold'>ChatFlow</h2>
                     <p className='text-gray-700 text-sm'>Instant Messaging</p>
                 </div>
-                {/* Right icons */}
                 <div className="flex gap-2">
-
-          <button className=" flex items-center justify-center text-gray-700 ">
-            <span className="text-2xl font-extrabold ">+</span>
-          </button>
-          <button onClick={()=> setOpts(!optsDisplay)} className=" text-gray-700 flex items-center justify-center">
-            <span className="text-2xl font-extrabold">:</span>
-          </button>
-          </div>
+                    <button className="flex items-center justify-center text-gray-700">
+                        <span className="text-2xl font-extrabold">+</span>
+                    </button>
+                    <button onClick={() => setOpts(!optsDisplay)} className="text-gray-700 flex items-center justify-center">
+                        <span className="text-2xl font-extrabold">:</span>
+                    </button>
+                </div>
             </div>
-            {
-            optsDisplay && (
-              <div className="flex flex-col absolute left-35  top-16 bg-amber-50/70 rounded-md px-2 py-6 max-w-1/5 h-40 text-gray-700 inset-0 z-21">
-                  <Link to={'/profile'} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Edit Profile</Link>
-                  <span className="w-full hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Change Mode</span>
-                  <button onClick={LogOUT} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Logout</button>
-              </div>
-            )
-          }
 
-            {/* SearchBar */}
-            <div className='my-2 p-4 '>
-                <input type="text" className='w-full bg-amber-50/25 p-2 rounded-md outline-none text-gray-700 ' placeholder='Search user' value={srchValue} onChange={(a)=> setSearchValue(a.target.value)} />
+            {optsDisplay && (
+                <div className="flex flex-col absolute left-35 top-16 bg-amber-50/70 rounded-md px-2 py-6 max-w-1/5 h-40 text-gray-700 z-21">
+                    <Link to={'/profile'} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Edit Profile</Link>
+                    <span className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Change Mode</span>
+                    <button onClick={LogOUT} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Logout</button>
+                </div>
+            )}
+
+            {/* Search */}
+            <div className='my-2 p-4'>
+                <input
+                    type="text"
+                    className='w-full bg-amber-50/25 p-2 rounded-md outline-none text-gray-700'
+                    placeholder='Search user'
+                    value={srchValue}
+                    onChange={(a) => setSearchValue(a.target.value)}
+                />
             </div>
-        <div className="flex-1 h-full flex-col overflow-y-scroll px-3 pb-4 space-y-2">
-            { !srchValue ?
-                allUsers.map((ech, idx)=>(
-                    <div  key={idx} className='flex gap-x-2 place-items-start cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full'>
-                        <div className='flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100'>
-                            {
-                                ech.uProPic ? <img src={ech.uProPic} alt={ech.uFullName} className='w-full h-full rounded-full' /> :
-                            <span className='text-lg font-bold'>{ ech.uFullName.slice(0,1)}</span>
-                            }
-                        </div>
-                        <div className='flex flex-col justify-start'>
-                            <h2 className='font-semibold text-lg gap-1 flex items-center'>{ech.uFullName}
-                                {
-                                    onlineUsers.includes(ech.id) &&
-                                    <span className='w-3 h-3 rounded-full z-10 border border-yellow-400 bg-green-600 animate-pulse '></span>
+
+            {/* Users List */}
+            <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2">
+                {filteredUsers.length === 0
+                    ? <p className='text-center text-gray-500 text-sm mt-4'>No users found</p>
+                    : filteredUsers.map((ech, idx) => (
+                        <div
+                            key={idx}
+                            onClick={() => setSelectedUser(ech)}
+                            className={`flex gap-x-2 place-items-center cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full p-1 ${selectedUser?._id === ech._id ? 'bg-amber-100/35' : ''}`}
+                        >
+                            <div className='relative flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100 shrink-0'>
+                                {ech.uProPic
+                                    ? <img src={ech.uProPic} alt={ech.uFullName} className='w-full h-full rounded-full object-cover' />
+                                    : <span className='text-lg font-bold'>{ech.uFullName.slice(0, 1)}</span>
                                 }
-                            </h2>
-                            {/* <p className='text-xs '>{ech.msg}</p> */}
+                                {onlineUsers.includes(ech._id) &&
+                                    <span className='absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-green-500'></span>
+                                }
+                            </div>
+                            <div className='flex flex-col justify-start min-w-0'>
+                                <h2 className='font-semibold text-sm text-gray-800 truncate'>{ech.uFullName}</h2>
+                                {unseenMsgs[ech._id] &&
+                                    <span className='text-xs text-white bg-blue-500 rounded-full px-2 w-fit'>
+                                        {unseenMsgs[ech._id]}
+                                    </span>
+                                }
+                            </div>
                         </div>
-                    </div>
-                )) : 
-                (
-                 srchUserResult.map((ech, idx)=>(
-                    <div onClick={()=> {setUser(ech)}} key={idx} className='flex gap-x-2 place-items-start cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full'>
-                        <div className='flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100'>
-                            {
-                                ech.uProPic ? <img src={ech.uProPic} alt={ech.uFullName} className='w-full h-full rounded-full' /> :
-                            <span className='text-lg font-bold'>{ ech.uFullName.slice(0,1)}</span>
-                            }
-                        </div>
-                        <div className='flex flex-col justify-start'>
-                            <h2 className='font-semibold text-lg gap-1 flex items-center'>{ech.uFullName}
-                            <span className='w-3 h-3 rounded-full z-10 border border-yellow-400 bg-green-600 animate-pulse '></span>
-                            </h2>
-                            {/* <p className='text-xs '>{ech.msg}</p> */}
-                        </div>
-                    </div>
-                ))
-                )
-            }
+                    ))
+                }
+            </div>
         </div>
-        </div>
-
-  )
+    );
 }
 
 export default LeftSidebar
