@@ -5,6 +5,7 @@ import AuthContext from '../Cntxts/Context'
 import { useEffect } from 'react'
 import { API_INSTANCE } from '../Utls/API'
 import MsgContext from '../Cntxts/MsgsCntxt'
+import OpenChat from './OpenChat'
 
 function LeftSidebar() {
     const navigateTo = useNavigate();
@@ -69,7 +70,7 @@ function LeftSidebar() {
                     : filteredUsers.map((ech, idx) => (
                         <div
                             key={idx}
-                            onClick={() => setSelectedUser(ech)}
+                            onClick={() => setSelectedUser(ech._id)}
                             className={`flex gap-x-2 place-items-center cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full p-1 ${selectedUser?._id === ech._id ? 'bg-amber-100/35' : ''}`}
                         >
                             <div className='relative flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100 shrink-0'>
@@ -78,12 +79,12 @@ function LeftSidebar() {
                                     : <span className='text-lg font-bold'>{ech.uFullName.slice(0, 1)}</span>
                                 }
                                 {onlineUsers.includes(ech._id) &&
-                                    <span className='absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-green-500'></span>
+                                    <span className='absolute right-1 bottom-1 animate-pulse w-3 h-3 rounded-full border-1 border-black bg-green-500'></span>
                                 }
                             </div>
                             <div className='flex flex-col justify-start min-w-0'>
                                 <h2 className='font-semibold text-sm text-gray-800 truncate'>{ech.uFullName}</h2>
-                                {unseenMsgs[ech._id] &&
+                                {unseenMsgs[ech] &&
                                     <span className='text-xs text-white bg-blue-500 rounded-full px-2 w-fit'>
                                         {unseenMsgs[ech._id]}
                                     </span>
@@ -93,6 +94,9 @@ function LeftSidebar() {
                     ))
                 }
             </div>
+            {/* {selectedUser && (
+                <OpenChat />
+            )} */}
         </div>
     );
 }

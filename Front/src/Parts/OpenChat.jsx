@@ -13,6 +13,8 @@ function OpenChat() {
  const {onlineUsers} = useContext(AuthContext)
  const { selectedUser } = useContext(MsgContext)
   const [msgTxts, setMsgTxts] = useState("");
+console.log("SLCTD:", selectedUser);
+console.log("online:", onlineUsers);
 
   return (
     <div className=" flex-1 flex-col h-screen overflow-y-scroll border-r border-gray-400">
@@ -29,8 +31,8 @@ function OpenChat() {
                     }
             </div>
             <div >
-                    <h2 className="text-2xl font-semibold">fghh</h2>
-                    {/* <p className="text-sm text-green-500 ">{onlineUsers.includes(selectedUser._id) ? 'connected' : 'disconnected'} </p> */}
+                    <h2 className="text-2xl font-semibold">{selectedUser.uFullName}</h2>
+                    <p className="text-sm text-green-500 ">{onlineUsers.includes(selectedUser) ? 'connected' : 'disconnected'} </p>
             </div>
         </div>
 

@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import MsgContext from '../Cntxts/MsgsCntxt'
 
-function OpenProfile({selectedUser}) {
+function OpenProfile() {
+  const {selectedUser} = useContext(MsgContext)
+  console.log("PROFILE_SLCTDUSR:", selectedUser);
+  
   return (
     <div className='w-full flex-1 p-4 flex flex-col gap-y-3 text-gray-900'>
       <div className='flex flex-col items-center justify-center border-b border-gray-500'>
         <div className='rounded-full w-16 h-16 flex items-center justify-center bg-blue-500/80 border border-gray-500'>
         {
           selectedUser?.uProPic ? <img src={selectedUser.uProPic} alt="profile pic" className='rounded-full p-1 border border-black w-full h-full object-cover' /> :
-            <span className='text-2xl font-bold'>{selectedUser?.uFullName.toUpperCase().slice(0,1)}</span>
+            <span className='text-2xl font-bold'>{selectedUser?.uFullName}</span>
         }
         </div>
         <p className='text-sm w-full my-2'>{selectedUser.uBio}</p>
