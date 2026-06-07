@@ -10,6 +10,7 @@ configDotenv();
 
 const myApp = express();
 myApp.use(express.json());
+myApp.use(express.urlencoded({extended: true}))
 myApp.use(cors());
 
 const myServer = http.createServer(myApp);

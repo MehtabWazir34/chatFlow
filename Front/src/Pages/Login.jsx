@@ -19,10 +19,7 @@ function LoginToAccount() {
     const handleLogin = async (a) => {
         a.preventDefault();
         try {
-            const myFormData = new FormData();
-            myFormData.append("uEmail", uEmail)
-            myFormData.append("uPassword", uPassword)
-            await LogIN(myFormData)
+            await LogIN({uEmail, uPassword})
             navigateTO("/")
         } catch (error) {
             console.log("ERR:", error.message);

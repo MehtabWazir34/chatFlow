@@ -16,6 +16,8 @@ console.log({
     secret: process.env.CLOUDINARY_API_SECRET
 })
 export const signUP = async (req, res) => {
+    console.log("SIGNUPBODY:", req.body);
+        console.log("signupHDR:", req.headers['content-type']);
     try {
         console.log("BODY:", req.body);      // check fields
         console.log("FILE:", req.file);  
@@ -49,14 +51,19 @@ export const signUP = async (req, res) => {
         let token = genToken(addUser._id);
         addUser.uPassword = undefined;
 
-        return res.status(200).json({ Msg: "Created", success: true, userCreated:addUser, token });
+        return res.status(200).json({ Msg: "Created", success: true, user:addUser, token });
 
     } catch (error) {
         res.status(500).json({ Msg: "Failed to create account", ERR: error.message });
     }
 }
 export const logIn = async(req, res)=>{
+    console.log("LOGINBODY:", req.body);
+    console.log("LOGINHDR:", req.headers['content-type']);
+    
     try {
+        
+
         const {uEmail, uPassword} = req.body;
         if(!uEmail || !uPassword) return res.json({Msg:"Fill both the fields to login!"});
         let user = await uModel.findOne({uEmail});
@@ -74,8 +81,11 @@ export const logIn = async(req, res)=>{
             Msg:"Logged In",
             success: true,
             user,
-            token
+            token,
+            body: req.body
         })
+        console.log("LogINBODy:", req.body);
+        
     } catch (error) {
         res.status(500).json({
             Msg:"Login failed",

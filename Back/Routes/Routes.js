@@ -24,7 +24,7 @@ export const userRoutes = Router()
 userRoutes.post("/create", (req, res, next) => {
     console.log("HIT /user/create"); // if this doesn't print, route is wrong
     next();
-}, upload.single("uProPic"), upload.single("uProPic"), signUP);
+}, upload.single("uProPic"), signUP);
 userRoutes.post('/login', logIn);
 userRoutes.post('/logout', MiddleChk, Logout);
 userRoutes.put("/update", MiddleChk, upload.single("uProPic"), editInfo);
