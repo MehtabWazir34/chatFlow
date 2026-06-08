@@ -29,7 +29,7 @@ const msgsSchema = new mongoose.Schema({
     msgSeen:{
         type: Boolean, default: false
     },
-    msgTxts:{ type: String},
+    msgTxts:{ type: String, required : true},
     msgImg:{type:String}
 }, {timestamps: true});
 export const msgModel = mongoose.model("Message", msgsSchema);

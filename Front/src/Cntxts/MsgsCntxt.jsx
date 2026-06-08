@@ -8,7 +8,7 @@ const MsgContext = createContext();
 export const MsgProvider = ({children})=>{
     const [unseenMsgs, setUnseenMsgs] = useState({});
     const [Users, setUsers] = useState([]);
-    const [msgs, setMsgs] = useState([]);
+    const [msgs, setMsgs] = useState({});
     const [selectedUser, setSelectedUser] = useState(null);
     const {socket, userAuth} = useContext(AuthContext);
 
@@ -35,6 +35,8 @@ export const MsgProvider = ({children})=>{
             const {data} = await API_INSTANCE.get(`/msgs/${userId}`);
             if(data.success){
                 setMsgs(data.chat)
+                // console.log("CHAT:", data.chat);
+                
             }
         } catch (error) {
             console.log("MSG-Send", error.message);

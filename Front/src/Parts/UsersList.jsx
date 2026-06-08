@@ -53,7 +53,7 @@ function LeftSidebar() {
             )}
 
             {/* Search */}
-            <div className='my-2 p-4'>
+            <div className=' p-4'>
                 <input
                     type="text"
                     className='w-full bg-amber-50/25 p-2 rounded-md outline-none text-gray-700'
@@ -64,14 +64,14 @@ function LeftSidebar() {
             </div>
 
             {/* Users List */}
-            <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2">
+            <div className="flex-1 overflow-y-auto px-2 py-4 space-y-2">
                 {filteredUsers.length === 0
                     ? <p className='text-center text-gray-500 text-sm mt-4'>No users found</p>
-                    : filteredUsers.map((ech, idx) => (
+                    : filteredUsers.map((ech) => (
                         <div
-                            key={idx}
-                            onClick={() => setSelectedUser(ech._id)}
-                            className={`flex gap-x-2 place-items-center cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full p-1 ${selectedUser?._id === ech._id ? 'bg-amber-100/35' : ''}`}
+                            key={ech._id}
+                            onClick={() => setSelectedUser(ech)}
+                            className={`flex gap-x-2 place-items-center cursor-pointer hover:bg-amber-100/35 transition-all duration-200 rounded-full  ${selectedUser?._id === ech._id ? 'bg-amber-100/35' : ''}`}
                         >
                             <div className='relative flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100 shrink-0'>
                                 {ech.uProPic
@@ -79,7 +79,7 @@ function LeftSidebar() {
                                     : <span className='text-lg font-bold'>{ech.uFullName.slice(0, 1)}</span>
                                 }
                                 {onlineUsers.includes(ech._id) &&
-                                    <span className='absolute right-1 bottom-1 animate-pulse w-3 h-3 rounded-full border-1 border-black bg-green-500'></span>
+                                    <span className='absolute right-1 bottom-1 animate-pulse w-3 h-3 rounded-full border border-black bg-green-500'></span>
                                 }
                             </div>
                             <div className='flex flex-col justify-start min-w-0'>

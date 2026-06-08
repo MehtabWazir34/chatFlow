@@ -44,6 +44,9 @@ export const twoPartyMsgs = async(req, res)=>{
 export const sndMsg = async(req, res)=>{
     try {
         const {msgTxts, msgImg} = req.body;
+        if(!msgTxts){
+            return res.status(401).json({Msg:"Can't sent empty msg"})
+        }
         const sndrId = req.user._id;
         const rcvrId = req.params.id;
         let imgURL;

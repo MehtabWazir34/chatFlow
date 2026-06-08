@@ -11,19 +11,24 @@ function OpenProfile() {
         <div className='rounded-full w-16 h-16 flex items-center justify-center bg-blue-500/80 border border-gray-500'>
         {
           selectedUser?.uProPic ? <img src={selectedUser.uProPic} alt="profile pic" className='rounded-full p-1 border border-black w-full h-full object-cover' /> :
-            <span className='text-2xl font-bold'>{selectedUser?.uFullName}</span>
+            <span className='text-2xl font-bold'>{selectedUser?.uFullName.slice(0,1)}</span>
         }
         </div>
-        <p className='text-sm w-full my-2'>{selectedUser.uBio}</p>
+        <h2 className='text-lg font-semibold text-center w-full'>{selectedUser.uFullName}</h2>
+        <p className='text-sm w-full mb-2'>{selectedUser.uBio}</p>
       </div>
 
         <div className='flex flex-col space-y-2 pb-5 border-b border-gray-500'>
             <h1 className='text-[15px]'>Shared media</h1>
             <div className='flex justify-start gap-1'>
-                <div className='w-14 h-14 rounded-md bg-green-500/80'></div>
-                <div className='w-14 h-14 rounded-md bg-gray-500/15'></div>
-                <div className='w-14 h-14 rounded-md bg-blue-50/55'></div>
-                <div className='w-14 h-14 rounded-md bg-yellow-500/75'></div>
+                <div className='w-20 h-20 rounded-md bg-green-500/80'></div>
+                <div className='w-20 h-20 rounded-md bg-gray-500/15'></div>
+                <div className='w-20 h-20 rounded-md bg-blue-50/55'></div>
+            </div>
+            <div className='flex justify-start gap-1'>
+                <div className='w-20 h-20 rounded-md bg-gray-500/15'></div>
+                <div className='w-20 h-20 rounded-md bg-blue-50/55'></div>
+                <div className='w-20 h-20 rounded-md bg-green-500/80'></div>
             </div>
         </div>
     </div>
