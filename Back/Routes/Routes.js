@@ -44,4 +44,4 @@ export const msgsRoutes = Router();
 msgsRoutes.get("/users", MiddleChk, allUsrMsgCtrl);
 msgsRoutes.get("/:id", MiddleChk, twoPartyMsgs);
 msgsRoutes.put("/msgseen-mark/:id", MiddleChk, msgSeenStatus);
-msgsRoutes.post("/send-msg/:id", MiddleChk, sndMsg);
+msgsRoutes.post("/send-msg/:id", MiddleChk, upload.array("msgImg", 5), sndMsg);

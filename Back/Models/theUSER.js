@@ -21,15 +21,15 @@ const userSCHEMA = new mongoose.Schema({
 export const uModel = mongoose.model("ModelUser", userSCHEMA);
 const msgsSchema = new mongoose.Schema({
     sndrId:{
-        type:[mongoose.Schema.Types.ObjectId], required : true, ref:'uModel'
+        type:mongoose.Schema.Types.ObjectId, required : true, ref:'uModel'
     },
     rcvrId:{
-        type:[mongoose.Schema.Types.ObjectId], required : true, ref:'uModel'
+        type:mongoose.Schema.Types.ObjectId, required : true, ref:'uModel'
     },
     msgSeen:{
         type: Boolean, default: false
     },
-    msgTxts:{ type: String, required : true},
-    msgImg:{type:String}
+    msgTxts:{ type: String},
+    msgImg:{type:[String]}
 }, {timestamps: true});
 export const msgModel = mongoose.model("Message", msgsSchema);

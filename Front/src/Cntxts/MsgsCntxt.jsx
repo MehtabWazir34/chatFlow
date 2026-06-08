@@ -8,7 +8,7 @@ const MsgContext = createContext();
 export const MsgProvider = ({children})=>{
     const [unseenMsgs, setUnseenMsgs] = useState({});
     const [Users, setUsers] = useState([]);
-    const [msgs, setMsgs] = useState({});
+    const [msgs, setMsgs] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const {socket, userAuth} = useContext(AuthContext);
 
@@ -44,7 +44,7 @@ export const MsgProvider = ({children})=>{
     }
     const sendMsg = async(msgData)=>{
         try {
-            const {data} = await API_INSTANCE.post(`/msgs/send-msg/${selectedUser._id}`, msgData);
+            const {data} = await API_INSTANCE.post(`/msgs/send-msg/${selectedUser._id}`, {msgData});
             if(data.success){
                 setMsgs((preMsgs)=> [...preMsgs, data.newMsg])
                 toast.success("Msg sent")

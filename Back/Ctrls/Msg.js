@@ -42,11 +42,12 @@ export const twoPartyMsgs = async(req, res)=>{
 
 // Send msg
 export const sndMsg = async(req, res)=>{
+
     try {
         const {msgTxts, msgImg} = req.body;
-        if(!msgTxts){
-            return res.status(401).json({Msg:"Can't sent empty msg"})
-        }
+        // if(!msgTxts){
+        //     return res.status(401).json({Msg:"Can't sent empty msg"})
+        // }
         const sndrId = req.user._id;
         const rcvrId = req.params.id;
         let imgURL;
@@ -60,7 +61,9 @@ export const sndMsg = async(req, res)=>{
         if(rcvrSKTId){
             socketio.to(rcvrSKTId).emit("newMsg", newMsg);
         }
-        res.status(200).json({Msg:"Msg send!", success: true, newMsg, msgImg: imgURL})
+        console.log("SEND BODY:", req.body);   // is msgTxts here?
+    console.log("SEND FILE:", req.file);   // is image here?
+        return res.status(200).json({Msg:"Msg send!", success: true, newMsg, msgImg: imgURL})
     } catch (error) {
         res.json({Msg:"Failed msg snd", ERR: error.message})
     }
