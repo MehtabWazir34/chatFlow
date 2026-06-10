@@ -146,7 +146,7 @@ export const getProfile = async(req, res)=>{
 }
 export const getAll = async(req, res)=>{
     try {
-        const users = await uModel.find();
+        const users = await uModel.find().sort({createdAt: -1}).exec();
         res.status(200).json({Msg:"Got All", users})
     } catch (error) {
         return res.status(500).json({Msg:"Failed to getAll", ERR: error.message})

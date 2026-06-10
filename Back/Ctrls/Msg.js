@@ -30,7 +30,7 @@ export const twoPartyMsgs = async(req, res)=>{
             $or:[
             {sndrId: myId, rcvrId: otherUsrId},
             {sndrId: otherUsrId, rcvrId: myId}
-        ]});
+        ]}).sort({createdAt: -1}).exec();
         await msgModel.updateMany({sndrId: otherUsrId, rcvrId: myId}, {msgSeen: true});
 
         res.status(200).json({Msg:"Success", success:true,  chat:bothSideMsgs})
@@ -44,7 +44,8 @@ export const twoPartyMsgs = async(req, res)=>{
 export const sndMsg = async(req, res)=>{
 
     try {
-        const {msgTxts, msgImg} = req.body;
+        const {msgTxts} = req.body;
+        const msgImg  = req.file?.path;
         // if(!msgTxts){
         //     return res.status(401).json({Msg:"Can't sent empty msg"})
         // }
@@ -52,7 +53,8 @@ export const sndMsg = async(req, res)=>{
         const rcvrId = req.params.id;
         let imgURL;
         if(msgImg){
-            imgURL = (await cloudinary.uploader.upload(msgImg)).secure_url;
+            const uploadImg = await cloudinary.uploader.upload(msgImg)
+            imgURL = uploadImg.secure_url;
                 };
         let newMsg = await msgModel.create({
             sndrId, rcvrId, msgTxts, msgImg: imgURL
@@ -62,10 +64,11 @@ export const sndMsg = async(req, res)=>{
             socketio.to(rcvrSKTId).emit("newMsg", newMsg);
         }
         console.log("SEND BODY:", req.body);   // is msgTxts here?
-    console.log("SEND FILE:", req.file);   // is image here?
+        console.log("SEND FILE:", req.file);   // is image here?
         return res.status(200).json({Msg:"Msg send!", success: true, newMsg, msgImg: imgURL})
     } catch (error) {
         res.json({Msg:"Failed msg snd", ERR: error.message})
+        
     }
 }
 // seen updates

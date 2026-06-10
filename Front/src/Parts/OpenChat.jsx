@@ -15,11 +15,12 @@ function OpenChat() {
  const { selectedUser, sendMsg, msgs } = useContext(MsgContext)
   const [msgTxts, setMsgTxts] = useState("");
   const [msgImgFile, setMsgImgFile] = useState(null);
-  // const [allChat, setChat] = useState([]);
-// console.log("SLCTD:", selectedUser);
-// console.log("online:", onlineUsers);
-// console.log("MSGS:", getSelectedUserMsgs(selectedUser));
-
+  const [showImgFile, setShowImgFile] = useState(null);
+  const [chatFilePREVIEW, setChatFILEPReview] = useState(null);
+  // console.log("online:", onlineUsers);
+  // console.log("MSGS:", getSelectedUserMsgs(selectedUser));
+  
+  // console.log("SLCTDusr:", selectedUser);
   console.log("MSGS:", msgs);
   const sendNEWMSg = ()=>{
     const msgData = new FormData();
@@ -28,8 +29,21 @@ function OpenChat() {
       msgData.append("msgImg", msgImgFile)
     }
     sendMsg(msgData)
+    setShowImgFile(null);
+    setMsgImgFile(null)
+    setMsgTxts('')
   }
-  
+
+  useEffect(()=> {
+    if(!msgImgFile){
+      setShowImgFile(null);
+      return;
+    }
+    const imgURL = URL.createObjectURL(msgImgFile);
+    setShowImgFile(imgURL);
+    return ()=> URL.revokeObjectURL(imgURL)
+  }, [msgImgFile])
+
   return (
     <div className=" flex-1 flex-col h-screen overflow-y-scroll border-r border-gray-400">
       {/* Hdr */}
@@ -76,11 +90,12 @@ function OpenChat() {
                             : selectedUser?.uProPic && <img src={selectedUser.uProPic} className="w-full h-full object-cover" />
                         }
                     </div>
-                    <div className={`max-w-[60%] px-4 py-3 rounded-2xl ${isMine ? 'bg-blue-500 text-white rounded-br-sm' : 'bg-white/10 border border-white/10 text-gray-900 rounded-bl-sm'}`}>
-                        {msg.msgImg && <img src={msg.msgImg} className="rounded-md mb-2 max-w-full" />}
+                    <div className={`w-[60%] p-1 rounded-sm ${isMine ? 'bg-blue-500 text-white rounded-br-sm' : 'bg-white/10 border border-white/10 text-gray-900 rounded-bl-sm'}`}>
+                        {msg.msgImg && <img src={msg.msgImg} className="rounded-sm mb-2 w-[full] h-[full]" />}
                         {msg.msgTxts && <p className="text-sm">{msg.msgTxts}</p>}
                         <span className="text-xs opacity-60 mt-1 block text-right">
-                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} <br />
+                        {msg.msgSeen && isMine && <span >Seen</span>  }
                         </span>
                     </div>
                 </div>
@@ -91,12 +106,14 @@ function OpenChat() {
 
         {/* Message Input */}
         <div className=" ">
+          {
+            showImgFile && ( <div className='mx-auto w-20 h-20 rounded-sm p-0.5
+            border border-gray-400'>
+                <img src={showImgFile} alt="msgImg" className='w-full h-full rounded-sm' />
+            </div> )
+          }
           <div className="flex items-center gap-x-4 border-y border-gray-400 px-5 py-3">
-            
-            {/* <button className="text-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-1 cursor-pointer transition">
-              +
-            </button> */}
-            <input type="file" onClick={()=> setMsgImgFile(File[0])} className="text-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-1 cursor-pointer transition hidden" id='msgImg' />
+            <input type="file" onClick={(a)=> setMsgImgFile(a.target.files)} className="text-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-1 cursor-pointer transition hidden" id='msgImg' />
             <label htmlFor="msgImg" className="text-2xl text-gray-700 hover:text-gray-900 hover:bg-gray-200 p-1 cursor-pointer transition">+</label>
 
             <input

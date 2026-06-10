@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from "path";
 import { uModel } from "../Models/theUSER.js";
 import { useRouteError } from "react-router-dom";
-console.log("ROUTeS");
+// console.log("ROUTeS");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb)=>{
@@ -20,6 +20,7 @@ const storage = multer.diskStorage({
 );
 
 const upload = multer({ storage });
+
 export const userRoutes = Router()
 userRoutes.post("/create", (req, res, next) => {
     console.log("HIT /user/create"); // if this doesn't print, route is wrong

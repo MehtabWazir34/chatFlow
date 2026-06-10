@@ -1,10 +1,15 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MsgContext from '../Cntxts/MsgsCntxt'
 
 function OpenProfile() {
-  const {selectedUser} = useContext(MsgContext)
+  const {selectedUser, msgs} = useContext(MsgContext)
   console.log("PROFILE_SLCTDUSR:", selectedUser);
-  
+  const [mediaFIles, setMdia] = useState([]);
+  // useEffect(()=>{
+  //   let filess = msgs.map((img)=> setMdia(img) );
+
+  // })
+
   return (
     <div className='w-full flex-1 p-4 flex flex-col gap-y-3 text-gray-900'>
       <div className='flex flex-col items-center justify-center border-b border-gray-500'>
@@ -20,16 +25,23 @@ function OpenProfile() {
 
         <div className='flex flex-col space-y-2 pb-5 border-b border-gray-500'>
             <h1 className='text-[15px]'>Shared media</h1>
-            <div className='flex justify-start gap-1'>
-                <div className='w-20 h-20 rounded-md bg-green-500/80'></div>
+            <div className='grid grid-cols-4 gap-2 [direction:rtl]'>
+              {/* { msgs } */}
+              { 
+                msgs.map((msg)=> (
+
+                  <div key={msg._id} className='[direction:ltr] w-20 h-20 rounded-md border p-0.5'>
+                    <img src={msg?.msgImg} alt="msgmedia" className='w-full h-full' />
+                    {/* { !msg.msgImg && <p>No shared media</p> } */}
+                  </div>
+                ))
+              }
+            </div>
+            {/* <div className='flex justify-start gap-1'>
                 <div className='w-20 h-20 rounded-md bg-gray-500/15'></div>
                 <div className='w-20 h-20 rounded-md bg-blue-50/55'></div>
-            </div>
-            <div className='flex justify-start gap-1'>
-                <div className='w-20 h-20 rounded-md bg-gray-500/15'></div>
-                <div className='w-20 h-20 rounded-md bg-blue-50/55'></div>
                 <div className='w-20 h-20 rounded-md bg-green-500/80'></div>
-            </div>
+            </div> */}
         </div>
     </div>
   )

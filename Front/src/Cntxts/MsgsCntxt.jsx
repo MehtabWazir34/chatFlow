@@ -39,17 +39,22 @@ export const MsgProvider = ({children})=>{
                 
             }
         } catch (error) {
-            console.log("MSG-Send", error.message);
+            console.log("GETMSGs", error.message);
         }
     }
     const sendMsg = async(msgData)=>{
         try {
-            const {data} = await API_INSTANCE.post(`/msgs/send-msg/${selectedUser._id}`, {msgData});
+            const {data} = await API_INSTANCE.post(`/msgs/send-msg/${selectedUser._id}`, msgData);
             if(data.success){
                 setMsgs((preMsgs)=> [...preMsgs, data.newMsg])
                 toast.success("Msg sent")
-            } else {
+                console.log("DATA:", msgData);
+                
+            } 
+            else {
                 toast.error("Failed to sent msg")
+                console.error("SNDFaild:", msgData);
+                
             }
         } catch (error) {
             console.log("MSG-Send", error.message);
