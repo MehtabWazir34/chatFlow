@@ -5,10 +5,8 @@ function OpenProfile() {
   const {selectedUser, msgs} = useContext(MsgContext)
   console.log("PROFILE_SLCTDUSR:", selectedUser);
   const [mediaFIles, setMdia] = useState([]);
-  // useEffect(()=>{
-  //   let filess = msgs.map((img)=> setMdia(img) );
-
-  // })
+  const [viewFile, setFIleVIew] = useState(false);
+   
 
   return (
     <div className='w-full flex-1 p-4 flex flex-col gap-y-3 text-gray-900'>
@@ -31,7 +29,7 @@ function OpenProfile() {
                 msgs.map((msg)=> (
 
                   <div key={msg._id} className='[direction:ltr] w-20 h-20 rounded-md border p-0.5'>
-                    <img src={msg?.msgImg} alt="msgmedia" className='w-full h-full' />
+                    <img onClick={()=> setFIleVIew(msg.msgImg)} src={msg?.msgImg} alt="msgmedia" className='w-full h-full' />
                     {/* { !msg.msgImg && <p>No shared media</p> } */}
                   </div>
                 ))
@@ -42,6 +40,14 @@ function OpenProfile() {
                 <div className='w-20 h-20 rounded-md bg-blue-50/55'></div>
                 <div className='w-20 h-20 rounded-md bg-green-500/80'></div>
             </div> */}
+        {
+                      viewFile && (
+                        <div className='w-10/12 h-11/12 rounded-sm p-2'>
+                          <span onClick={()=> setFIleVIew(!viewFile)} className='relative right-1 top-2 rounded-full p-1 cursor-pointer hover:bg-black bg-black/60 transition-colors duration-200 w-4 h-4' >x</span>
+                          <img onClick={()=> setFIleVIew(!viewFile)} src={viewFile} alt="viewFile" className='w-full h-full rounded-sm' />
+                        </div>
+                      )
+                    }
         </div>
     </div>
   )

@@ -17,6 +17,7 @@ function OpenChat() {
   const [msgImgFile, setMsgImgFile] = useState(null);
   const [showImgFile, setShowImgFile] = useState(null);
   const [chatFilePREVIEW, setChatFILEPReview] = useState(null);
+  const [viewFile, setFIleVIew] = useState(null);
   // console.log("online:", onlineUsers);
   // console.log("MSGS:", getSelectedUserMsgs(selectedUser));
   
@@ -43,6 +44,12 @@ function OpenChat() {
     setShowImgFile(imgURL);
     return ()=> URL.revokeObjectURL(imgURL)
   }, [msgImgFile])
+
+  const showFile = (imgURL)=>{
+    // const imgURL = URL.createObjectURL(selectedImg);
+    setFIleVIew(imgURL);
+    // return ()=> URL.revokeObjectURL(imgURL);
+  }
 
   return (
     <div className=" flex-1 flex-col h-screen overflow-y-scroll border-r border-gray-400">
@@ -91,20 +98,30 @@ function OpenChat() {
                         }
                     </div>
                     <div className={`w-[60%] p-1 rounded-sm ${isMine ? 'bg-blue-500 text-white rounded-br-sm' : 'bg-white/10 border border-white/10 text-gray-900 rounded-bl-sm'}`}>
-                        {msg.msgImg && <img src={msg.msgImg} className="rounded-sm mb-2 w-[full] h-[full]" />}
+                        {msg.msgImg && <img onClick={()=> showFile(msg.msgImg)} src={msg.msgImg} className="rounded-sm mb-2 cursor-pointer w-[full] h-[full]" />}
                         {msg.msgTxts && <p className="text-sm">{msg.msgTxts}</p>}
                         <span className="text-xs opacity-60 mt-1 block text-right">
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} <br />
                         {msg.msgSeen && isMine && <span >Seen</span>  }
                         </span>
                     </div>
+                    
                 </div>
+                
             );
         })
     }
 </div>
 
         {/* Message Input */}
+          {
+                        viewFile && (
+                          <div className='max-w-4/12 mx-auto flex flex-col align-middle justify-center max-h-4/5 bg-gray-600/65 fixed top-10 right-1 z-50 inset-0 rounded-sm px-4 py-2'>
+                            <span onClick={()=> setFIleVIew(null)} className='absolute -right-1 top-0 rounded-full px-2 py-1 text-center  cursor-pointer hover:bg-black bg-black/60 transition-colors duration-200 ' >x</span>
+                            <img onClick={()=> setFIleVIew(!viewFile)} src={viewFile} alt="viewFile" className='max-w-full max-h-full rounded-sm' />
+                          </div>
+                        )
+                      }
         <div className=" ">
           {
             showImgFile && ( <div className='mx-auto w-20 h-20 rounded-sm p-0.5
@@ -130,7 +147,9 @@ function OpenChat() {
           </div>
         </div>
     </div>
-  )
+
+)
+
 }
 
 export default OpenChat
