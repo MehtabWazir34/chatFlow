@@ -89,6 +89,16 @@ export const MsgProvider = ({children})=>{
     const getOffMsg = async()=>{
         if(socket) socket.off("newMsg");
     }
+    const deleteMsg = async(msgID)=>{
+        
+        const {data} = await API_INSTANCE.delete(`/msgs/dlt-msg/${msgID}`);
+        if(data.success){
+            setMsgs((pre)=> pre.filter((msg)=> msg._id !== msgID))
+            toast.success("Msg deleted")
+        } else {
+            toast.error("Failed msgdlt")
+        }
+    };
 
     useEffect(()=>{
         if(selectedUser){
@@ -108,7 +118,7 @@ export const MsgProvider = ({children})=>{
     }, [socket, selectedUser])
 
     const values = { getAllUsers,
-        Users, msgs, setMsgs, unseenMsgs, setUnseenMsgs, sendMsg, selectedUser, setSelectedUser
+        Users, msgs, setMsgs, unseenMsgs, setUnseenMsgs, sendMsg, selectedUser, setSelectedUser, deleteMsg
     }
     return (
         <MsgContext.Provider value={values}>

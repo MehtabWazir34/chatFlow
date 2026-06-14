@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { editInfo, getAll, getProfile, logIn, Logout, signUP } from "../Ctrls/User.js";
 import { MiddleChk } from "../MdlWre/MiddleChk.js";
-import { allUsrMsgCtrl, msgSeenStatus, sndMsg, twoPartyMsgs } from "../Ctrls/Msg.js";
+import { allUsrMsgCtrl, dltMSG, msgSeenStatus, sndMsg, twoPartyMsgs } from "../Ctrls/Msg.js";
 import multer from "multer";
 import fs from 'fs';
 import path from "path";
@@ -44,5 +44,6 @@ userRoutes.get("/all", MiddleChk, getAll)
 export const msgsRoutes = Router();
 msgsRoutes.get("/users", MiddleChk, allUsrMsgCtrl);
 msgsRoutes.get("/:id", MiddleChk, twoPartyMsgs);
-msgsRoutes.put("/msgseen-mark/:id", MiddleChk, msgSeenStatus);
 msgsRoutes.post("/send-msg/:id", MiddleChk, upload.array("msgImg", 5), sndMsg);
+msgsRoutes.put("/msgseen-mark/:id", MiddleChk, msgSeenStatus);
+msgsRoutes.delete("/dlt-msg/:id", MiddleChk, dltMSG)

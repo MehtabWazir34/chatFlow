@@ -81,3 +81,25 @@ export const msgSeenStatus = async(req, res)=>{
         res.status(401).json({Msg:"Failed seen updates", ERR: error.message})
     }
 }
+export const dltMSG = async (req, res) => {
+    try {
+        const msgId = req.params.id;
+        const userId = req.user._id;
+
+        // Make sure user can only delete their own messages
+        const msg = await msgModel.findById(msgId);
+        if (!msg) {
+            return res.status(404).json({ Msg: "Message not found" });
+        }
+        if (msg.sndrId.toString() !== userId.toString()) {
+            return res.status(403).json({ Msg: "Not authorized to delete this message" });
+        }
+
+        const msgDeleted = await msgModel.findByIdAndDelete(msgId);
+        return res.status(200).json({ Msg: "Deleted", success: true, msgDeleted });
+
+    } catch (error) {
+        console.log("DLT ERR:", error.message);
+        res.status(500).json({ Msg: "Failed msgDLT", ERR: error.message });
+    }
+};

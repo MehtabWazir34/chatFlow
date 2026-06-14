@@ -9,15 +9,18 @@ import AuthContext from '../Cntxts/Context';
 
 function OpenChat() {
     const { onlineUsers, userAuth } = useContext(AuthContext);
-    const { selectedUser, sendMsg, msgs } = useContext(MsgContext);
+    const { selectedUser, sendMsg, msgs, deleteMsg } = useContext(MsgContext);
 
     const [msgTxts, setMsgTxts] = useState("");
+    // const [chatMsgs, setChat] = useState([])
     const [msgImgFile, setMsgImgFile] = useState(null);
     const [showImgFile, setShowImgFile] = useState(null);
     const [viewFile, setFileView] = useState(null);
     const [msgOpts, setMsgOpts] = useState(null); // ✅ stores msg._id, not boolean
     const bottomRef = useRef(null);
 
+    // console.log("MSGS:", chatMsgs);
+    
     // Auto scroll to bottom
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -43,11 +46,18 @@ function OpenChat() {
     };
 
     useEffect(() => {
+        // setChat(msgs)
         if (!msgImgFile) { setShowImgFile(null); return; }
         const imgURL = URL.createObjectURL(msgImgFile);
         setShowImgFile(imgURL);
         return () => URL.revokeObjectURL(imgURL);
-    }, [msgImgFile]);
+    }, [msgImgFile, msgs]);
+
+    // const HndleDeleteMsg=(msgId)=>{
+    //     deleteMsg(msgId);
+    //     const upMSGS = chatMsgs.filter((msg)=> msg._id !== msgId)
+    //     setChat(upMSGS)
+    // }
 
     return (
         <div className="flex-1 flex flex-col h-screen border-r border-gray-400">
@@ -130,7 +140,7 @@ function OpenChat() {
                                             <ul className={`absolute z-50 flex flex-col bg-white shadow-md rounded-md p-1 text-gray-700 text-sm w-24 ${isMine ? 'right-6' : 'left-6'} bottom-0`}>
                                                 <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Edit</li>
                                                 <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Forward</li>
-                                                <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer text-red-500'>Delete</li>
+                                                <button onClick={()=> deleteMsg(msg._id)} className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer text-red-500'>Delete</button>
                                             </ul>
                                         )}
                                     </div>
@@ -144,13 +154,13 @@ function OpenChat() {
 
             {/* Image preview */}
             {viewFile && (
-                <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60'>
+                <div onClick={() => setFileView(null)} className='fixed inset-0 z-50 flex items-center justify-center bg-black/60'>
                     <div className='relative max-w-2xl max-h-[80vh]'>
                         <span
                             onClick={() => setFileView(null)}
                             className='absolute -top-3 -right-3 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer text-xs'
                         >x</span>
-                        <img src={viewFile} alt="preview" className='max-w-full max-h-[80vh] rounded-md' />
+                        <img onClick={() => setFileView(null)} src={viewFile} alt="preview" className='max-w-full max-h-[80vh] rounded-md' />
                     </div>
                 </div>
             )}
