@@ -44,6 +44,9 @@ userRoutes.get("/all", MiddleChk, getAll)
 export const msgsRoutes = Router();
 msgsRoutes.get("/users", MiddleChk, allUsrMsgCtrl);
 msgsRoutes.get("/:id", MiddleChk, twoPartyMsgs);
-msgsRoutes.post("/send-msg/:id", MiddleChk, upload.array("msgImg", 5), sndMsg);
+msgsRoutes.post("/send-msg/:id",(req, res, next) => {
+    console.log("HIT /snd"); // if this doesn't print, route is wrong
+    next();
+}, MiddleChk, upload.single("msgImg"), sndMsg);
 msgsRoutes.put("/msgseen-mark/:id", MiddleChk, msgSeenStatus);
 msgsRoutes.delete("/dlt-msg/:id", MiddleChk, dltMSG)

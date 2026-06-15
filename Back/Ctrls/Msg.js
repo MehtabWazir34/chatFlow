@@ -30,7 +30,7 @@ export const twoPartyMsgs = async(req, res)=>{
             $or:[
             {sndrId: myId, rcvrId: otherUsrId},
             {sndrId: otherUsrId, rcvrId: myId}
-        ]}).sort({createdAt: -1}).exec();
+        ]});
         await msgModel.updateMany({sndrId: otherUsrId, rcvrId: myId}, {msgSeen: true});
 
         res.status(200).json({Msg:"Success", success:true,  chat:bothSideMsgs})

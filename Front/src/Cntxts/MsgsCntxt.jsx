@@ -48,13 +48,11 @@ export const MsgProvider = ({children})=>{
             if(data.success){
                 setMsgs((preMsgs)=> [...preMsgs, data.newMsg])
                 toast.success("Msg sent")
-                console.log("DATA:", msgData);
-                
+                console.log("DATA:", msgData);    
             } 
             else {
                 toast.error("Failed to sent msg")
-                console.error("SNDFaild:", msgData);
-                
+                console.error("SNDFaild:", msgData);  
             }
         } catch (error) {
             console.log("MSG-Send", error.message);

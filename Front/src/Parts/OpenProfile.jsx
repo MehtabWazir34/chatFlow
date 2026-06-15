@@ -4,10 +4,15 @@ import MsgContext from '../Cntxts/MsgsCntxt'
 function OpenProfile() {
   const {selectedUser, msgs} = useContext(MsgContext)
   console.log("PROFILE_SLCTDUSR:", selectedUser);
-  const [mediaFIles, setMdia] = useState([]);
   const [viewFile, setFIleVIew] = useState(false);
    
 
+  const sharedMedia = msgs.filter((msg)=>  msg.msgImg)
+  useEffect(()=>{
+    sharedMedia;
+  }, [sharedMedia])
+  console.log('mmm', sharedMedia);
+  
   return (
     <div className='w-full flex-1 p-4 flex flex-col gap-y-3 text-gray-900'>
       <div className='flex flex-col items-center justify-center border-b border-gray-500'>
@@ -23,28 +28,28 @@ function OpenProfile() {
 
         <div className='flex flex-col space-y-2 pb-5 border-b border-gray-500'>
             <h1 className='text-[15px]'>Shared media</h1>
-            <div className='grid grid-cols-4 gap-2 [direction:rtl]'>
-              {/* { msgs } */}
-              { 
-                msgs.map((msg)=> (
-
-                  <div key={msg._id} className='[direction:ltr] w-20 h-20 rounded-md border p-0.5'>
-                    <img onClick={()=> setFIleVIew(msg.msgImg)} src={msg?.msgImg} alt="msgmedia" className='w-full h-full' />
-                    {/* { !msg.msgImg && <p>No shared media</p> } */}
-                  </div>
-                ))
-              }
+            <div className='grid grid-cols-4 gap-2 overflow-y-auto max-h-64'>
+              {sharedMedia.length === 0
+    ? <p className="text-xs text-gray-500">No shared media yet</p>
+    : sharedMedia.map((msg) => (
+        <div key={msg._id} className='w-20 h-20 rounded-md border p-0.5 overflow-hidden cursor-pointer'>
+            <img
+                onClick={() => setFIleVIew(msg.msgImg)}
+                src={msg.msgImg}
+                alt="media"
+                className='w-full h-full object-cover rounded-md'
+            />
+        </div>
+    ))
+}
             </div>
-            {/* <div className='flex justify-start gap-1'>
-                <div className='w-20 h-20 rounded-md bg-gray-500/15'></div>
-                <div className='w-20 h-20 rounded-md bg-blue-50/55'></div>
-                <div className='w-20 h-20 rounded-md bg-green-500/80'></div>
-            </div> */}
         {
                       viewFile && (
-                        <div className='w-10/12 h-11/12 rounded-sm p-2'>
-                          <span onClick={()=> setFIleVIew(!viewFile)} className='relative right-1 top-2 rounded-full p-1 cursor-pointer hover:bg-black bg-black/60 transition-colors duration-200 w-4 h-4' >x</span>
+                        <div className='fixed inset-0 z-50 flex justify-center items-center rounded-sm p-2 bg-black/60'>
+                        <div className='relative max-w-2xl h-[80vh] rounded-sm'>
+                          <span onClick={()=> setFIleVIew(!viewFile)} className='absolute -right-3 -top-3 rounded-full p-1 cursor-pointer hover:bg-black/80 bg-black transition-colors duration-200 w-6 h-6 flex items-center justify-center text-white' >x</span>
                           <img onClick={()=> setFIleVIew(!viewFile)} src={viewFile} alt="viewFile" className='w-full h-full rounded-sm' />
+                        </div>
                         </div>
                       )
                     }

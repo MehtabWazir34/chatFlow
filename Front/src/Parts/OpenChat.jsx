@@ -11,15 +11,14 @@ function OpenChat() {
     const { onlineUsers, userAuth } = useContext(AuthContext);
     const { selectedUser, sendMsg, msgs, deleteMsg } = useContext(MsgContext);
 
-    const [msgTxts, setMsgTxts] = useState("");
-    // const [chatMsgs, setChat] = useState([])
-    const [msgImgFile, setMsgImgFile] = useState(null);
-    const [showImgFile, setShowImgFile] = useState(null);
-    const [viewFile, setFileView] = useState(null);
-    const [msgOpts, setMsgOpts] = useState(null); // ✅ stores msg._id, not boolean
+    const [msgTxts, setMsgTxts] = useState(""); //msg inpute txts
+    const [msgImgFile, setMsgImgFile] = useState(null); //selct imgfile for msgImg
+    const [previewMsgImgFile, setMsgImgPreview] = useState(null); //view Before sending msg
+    const [viewMsgImgFile, setViewMsgImgFile] = useState(null); // Big onclick view after sending msg
+    const [msgOpts, setMsgOpts] = useState(null); // msgs opts edit, delete, frwrd. stores msg._id, not boolean
     const bottomRef = useRef(null);
 
-    // console.log("MSGS:", chatMsgs);
+    console.log("MSGIMG:", msgImgFile);
     
     // Auto scroll to bottom
     useEffect(() => {
@@ -28,11 +27,14 @@ function OpenChat() {
 
     const sendNEWMSg = () => {
         if (!msgTxts && !msgImgFile) return;
+        console.log("TXTS:", msgTxts);
+        console.log("img:", msgImgFile);
+        
         const msgData = new FormData();
         msgData.append("msgTxts", msgTxts);
         if (msgImgFile) msgData.append("msgImg", msgImgFile);
         sendMsg(msgData);
-        setShowImgFile(null);
+        setMsgImgPreview(null);
         setMsgImgFile(null);
         setMsgTxts('');
     };
@@ -46,12 +48,12 @@ function OpenChat() {
     };
 
     useEffect(() => {
-        // setChat(msgs)
-        if (!msgImgFile) { setShowImgFile(null); return; }
+        if (!msgImgFile) return; 
         const imgURL = URL.createObjectURL(msgImgFile);
-        setShowImgFile(imgURL);
+        setMsgImgPreview(imgURL);
+
         return () => URL.revokeObjectURL(imgURL);
-    }, [msgImgFile, msgs]);
+    }, [msgImgFile]);
 
     // const HndleDeleteMsg=(msgId)=>{
     //     deleteMsg(msgId);
@@ -97,7 +99,7 @@ function OpenChat() {
                         return (
                             <div
                                 key={msg._id}
-                                className={`flex items-end gap-2 ${isMine ? 'flex-row-reverse' : 'flex-row'}`}
+                                className={` flex items-end gap-2 ${isMine ? 'flex-row-reverse' : 'flex-row'}`}
                             >
                                 {/* Avatar */}
                                 <div className="w-8 h-8 rounded-full bg-blue-500 shrink-0 overflow-hidden">
@@ -114,7 +116,7 @@ function OpenChat() {
                                     <div className={`px-4 py-2 rounded-2xl text-sm ${isMine ? 'bg-blue-500 text-white rounded-br-none' : 'bg-white/10 border border-white/10 text-gray-900 rounded-bl-none'}`}>
                                         {msg.msgImg && (
                                             <img
-                                                onClick={() => setFileView(msg.msgImg)}
+                                                onClick={() => setViewMsgImgFile(msg.msgImg)}
                                                 src={msg.msgImg}
                                                 className="rounded-md mb-2 max-w-[200px] cursor-pointer"
                                             />
@@ -153,26 +155,26 @@ function OpenChat() {
             </div>
 
             {/* Image preview */}
-            {viewFile && (
-                <div onClick={() => setFileView(null)} className='fixed inset-0 z-50 flex items-center justify-center bg-black/60'>
+            {viewMsgImgFile && (
+                <div onClick={() => setViewMsgImgFile(null)} className='fixed inset-0 z-50 flex items-center justify-center bg-black/60'>
                     <div className='relative max-w-2xl max-h-[80vh]'>
                         <span
-                            onClick={() => setFileView(null)}
+                            onClick={() => setViewMsgImgFile(null)}
                             className='absolute -top-3 -right-3 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer text-xs'
                         >x</span>
-                        <img onClick={() => setFileView(null)} src={viewFile} alt="preview" className='max-w-full max-h-[80vh] rounded-md' />
+                        <img onClick={() => setViewMsgImgFile(null)} src={viewMsgImgFile} alt="preview" className='max-w-full max-h-[80vh] rounded-md' />
                     </div>
                 </div>
             )}
 
             {/* Input area */}
             <div className="border-t border-gray-400">
-                {showImgFile && (
+                {previewMsgImgFile && (
                     <div className='px-5 pt-3'>
                         <div className='relative w-20 h-20 rounded-md border border-gray-400 overflow-hidden'>
-                            <img src={showImgFile} alt="preview" className='w-full h-full object-cover' />
+                            <img src={previewMsgImgFile} alt="preview" className='w-full h-full object-cover' />
                             <span
-                                onClick={() => { setShowImgFile(null); setMsgImgFile(null); }}
+                                onClick={() =>{ setMsgImgPreview(null); setMsgImgFile(null)}}
                                 className='absolute top-0 right-0 bg-black/60 text-white text-xs px-1 cursor-pointer'
                             >x</span>
                         </div>
