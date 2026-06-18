@@ -16,10 +16,10 @@ function App(){
       {/* bg-[url('https://img.magnific.com/premium-photo/chat-app-icon-logo-design_113255-191767.jpg')] bg-contain bg-no-repeat  */}
       <Toaster className='top-18 flex justify-center'/>
     <Routes>
-        <Route path='/' element={ <Home/> } />
-        <Route path='/profile' element={ <Profile/> } />
-        {/* <Route path='/' element={ userAuth ? <Home/> :  <Navigate to="/login" />} />
-        <Route path='/profile' element={ userAuth ? <Profile/> :  <Navigate to="/login" />} /> */}
+        {/* <Route path='/' element={ <Home/> } />
+        <Route path='/profile' element={ <Profile/> } /> */}
+        <Route path='/' element={ userAuth ? <Home/> :  <Navigate to="/login" />} />
+        <Route path='/profile' element={ userAuth ? <Profile/> :  <Navigate to="/login" />} />
         <Route path='/login' element={<LoginToAccount/>} />
     </Routes>
     </main>
