@@ -5,7 +5,7 @@ import { socketio, userSKTMap } from "../MyApp.js";
 export const allUsrMsgCtrl = async(req, res)=>{
     try {
         let myId = req.user._id;
-        // Get all users except that one rcvr.
+        // Get all users except that one sndr/me.
         const fltrUsers = await uModel.find({_id:{$ne:myId}}).select("-uPassword");
         const unseenMsgs = {};
         const prms = fltrUsers.map(async(eachUser)=>{

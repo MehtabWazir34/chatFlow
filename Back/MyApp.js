@@ -45,6 +45,10 @@ myApp.use("/msgs", msgsRoutes);
 
 const port = process.env.APP_PORT || 3700;
 
-myServer.listen(port, () => {
-    console.log(`myApp is running on port ${port}`);
-});
+if(process.env.NODE_ENV !== 'production'){
+
+    myServer.listen(port, () => {
+        console.log(`myApp is running on port ${port}`);
+    });
+};
+export default myApp;
