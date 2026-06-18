@@ -10,22 +10,36 @@ import OpenChat from './OpenChat'
 function LeftSidebar() {
     const navigateTo = useNavigate();
     const { LogOut, onlineUsers } = useContext(AuthContext);
-    const { Users, unseenMsgs, setUnseenMsgs, selectedUser, setSelectedUser } = useContext(MsgContext);
+    const { Users, unseenMsgs, setUnseenMsgs, selectedUser, setSelectedUser, msgs } = useContext(MsgContext);
 
     const [optsDisplay, setOpts] = useState(false);
     const [srchValue, setSearchValue] = useState('');
 
+    // const unReadMsgs = msgs.reduce((acc, msg)=>{
+    //     const snderId = msg.snderId.toString()
+    //     if(msg.msgSeen === 'false' || !msg.msgSeen){
+    //         acc[snderId] = (acc[snderId] || 0) + 1;
+    //     };
+    //     return acc;
+    // }, {})
+    console.log("Unread:", unseenMsgs);
+    
     const filteredUsers = srchValue
         ? Users.filter((user) =>
             user.uFullName.toLowerCase().includes(srchValue.toLowerCase()))
         : Users;
 
+        // console.log("FLTRUSER:", filteredUsers);
+        
     const LogOUT = async (a) => {
         a.preventDefault();
         await LogOut();
         navigateTo('/login');
     };
-
+    // const unseenMark = msgs.filter((msg)=> msg.msgSeen === false)
+    // setUnseenMsgs(unseenMark)
+    // console.log("UNSSEN:", unseenMsgs);
+    
     return (
         <div className={`flex flex-col h-full w-[320px] pr-8 border-r border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
             {/* Header */}
@@ -75,20 +89,23 @@ function LeftSidebar() {
                         >
                             <div className='relative flex items-center justify-center overflow-hidden rounded-full w-12 h-12 bg-blue-500 text-gray-100 shrink-0'>
                                 {ech.uProPic
-                                    ? <img src={ech.uProPic} alt={ech.uFullName} className='w-full h-full rounded-full object-cover' />
+                                    ? <img crossOrigin="anonymous" src={ech.uProPic} alt={ech.uFullName} className='w-full h-full rounded-full object-cover' />
                                     : <span className='text-lg font-bold'>{ech.uFullName.slice(0, 1)}</span>
                                 }
                                 {onlineUsers.includes(ech._id) &&
                                     <span className='absolute right-1 bottom-1 animate-pulse w-3 h-3 rounded-full border border-black bg-green-500'></span>
                                 }
                             </div>
-                            <div className='flex flex-col justify-start min-w-0'>
-                                <h2 className='font-semibold text-sm text-gray-800 truncate'>{ech.uFullName}</h2>
-                                {unseenMsgs[ech] &&
+                            <div className='flex justify-start min-w-0'>
+                                <h2 className='font-semibold text-sm text-gray-800 truncate'>{ech.uFullName} 
+
+                                </h2>
+                                {
+                                    unseenMsgs[ech._id] > 0 && 
                                     <span className='text-xs text-white bg-blue-500 rounded-full px-2 w-fit'>
                                         {unseenMsgs[ech._id]}
                                     </span>
-                                }
+                                    }
                             </div>
                         </div>
                     ))

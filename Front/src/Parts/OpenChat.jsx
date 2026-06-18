@@ -105,7 +105,7 @@ function OpenChat() {
                                 <div className="w-8 h-8 rounded-full bg-blue-500 shrink-0 overflow-hidden">
                                     {isMine
                                         ? userAuth?.uProPic && <img src={userAuth.uProPic} className="w-full h-full object-cover" />
-                                        : selectedUser?.uProPic && <img src={selectedUser.uProPic} className="w-full h-full object-cover" />
+                                        : selectedUser?.uProPic && <img crossOrigin="anonymous" src={selectedUser.uProPic} className="w-full h-full object-cover" />
                                     }
                                 </div>
 
@@ -115,7 +115,7 @@ function OpenChat() {
                                     {/* Bubble */}
                                     <div className={`px-4 py-2 rounded-2xl text-sm ${isMine ? 'bg-blue-500 text-white rounded-br-none' : 'bg-white/10 border border-white/10 text-gray-900 rounded-bl-none'}`}>
                                         {msg.msgImg && (
-                                            <img
+                                            <img crossOrigin="anonymous"
                                                 onClick={() => setViewMsgImgFile(msg.msgImg)}
                                                 src={msg.msgImg}
                                                 className="rounded-md mb-2 max-w-[200px] cursor-pointer"

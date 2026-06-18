@@ -109,7 +109,7 @@ export const MsgProvider = ({children})=>{
                 })
             }
         }
-    }, [selectedUser]);
+    }, [selectedUser, unseenMsgs]);
     useEffect(()=>{
         getInstantLiveMsg();
         return ()=> getOffMsg();

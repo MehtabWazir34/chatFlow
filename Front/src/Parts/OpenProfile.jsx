@@ -18,7 +18,7 @@ function OpenProfile() {
       <div className='flex flex-col items-center justify-center border-b border-gray-500'>
         <div className='rounded-full w-16 h-16 flex items-center justify-center bg-blue-500/80 border border-gray-500'>
         {
-          selectedUser?.uProPic ? <img src={selectedUser.uProPic} alt="profile pic" className='rounded-full p-1 border border-black w-full h-full object-cover' /> :
+          selectedUser?.uProPic ? <img crossOrigin='anonymous' src={selectedUser.uProPic} alt="profile pic" className='rounded-full p-1 border border-black w-full h-full object-cover' /> :
             <span className='text-2xl font-bold'>{selectedUser?.uFullName.slice(0,1)}</span>
         }
         </div>
@@ -33,7 +33,7 @@ function OpenProfile() {
     ? <p className="text-xs text-gray-500">No shared media yet</p>
     : sharedMedia.map((msg) => (
         <div key={msg._id} className='w-20 h-20 rounded-md border p-0.5 overflow-hidden cursor-pointer'>
-            <img
+            <img crossOrigin='anonymous'
                 onClick={() => setFIleVIew(msg.msgImg)}
                 src={msg.msgImg}
                 alt="media"
