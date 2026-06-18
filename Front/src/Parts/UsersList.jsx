@@ -96,7 +96,7 @@ function LeftSidebar() {
                                     <span className='absolute right-1 bottom-1 animate-pulse w-3 h-3 rounded-full border border-black bg-green-500'></span>
                                 }
                             </div>
-                            <div className='flex justify-start min-w-0'>
+                            <div className='flex justify-start gap-x-6 w-1/2'>
                                 <h2 className='font-semibold text-sm text-gray-800 truncate'>{ech.uFullName} 
 
                                 </h2>

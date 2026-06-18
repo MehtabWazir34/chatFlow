@@ -2,22 +2,48 @@ import cloudinary from "../Cnfg/Cloudinary.js";
 import { msgModel, uModel } from "../Models/theUSER.js";
 import { socketio, userSKTMap } from "../MyApp.js";
 
-export const allUsrMsgCtrl = async(req, res)=>{
+export const allUsrMsgCtrl = async (req, res) => {
     try {
-        let myId = req.user._id;
-        // Get all users except that one sndr/me.
-        const fltrUsers = await uModel.find({_id:{$ne:myId}}).select("-uPassword");
+        const myId = req.user._id;
+        const fltrUsers = await uModel.find({ _id: { $ne: myId } }).select("-uPassword");
         const unseenMsgs = {};
-        const prms = fltrUsers.map(async(eachUser)=>{
-            const allMsgs = await msgModel.find({sndrId: eachUser._id, rcvrId: myId, msgSeen: false});
-            if(allMsgs.length > 0){
+        const lastMsgTime = {}; // ✅ new
+
+        const prms = fltrUsers.map(async (eachUser) => {
+            const allMsgs = await msgModel.find({ sndrId: eachUser._id, rcvrId: myId, msgSeen: false });
+            if (allMsgs.length > 0) {
                 unseenMsgs[eachUser._id] = allMsgs.length;
             }
+
+            // ✅ Get the most recent message between me and this user (either direction)
+            const lastMsg = await msgModel.findOne({
+                $or: [
+                    { sndrId: eachUser._id, rcvrId: myId },
+                    { sndrId: myId, rcvrId: eachUser._id }
+                ]
+            }).sort({ createdAt: -1 });
+
+            lastMsgTime[eachUser._id] = lastMsg ? lastMsg.createdAt : null;
         });
+
         await Promise.all(prms);
-        res.status(200).json({Msg:"Success", success:true, users:fltrUsers, unseenMsgs})
+
+        // ✅ Sort: unseen first, then by latest message time
+        const sortedUsers = fltrUsers.sort((a, b) => {
+            const aUnseen = unseenMsgs[a._id] || 0;
+            const bUnseen = unseenMsgs[b._id] || 0;
+
+            if (aUnseen > 0 && bUnseen === 0) return -1;
+            if (bUnseen > 0 && aUnseen === 0) return 1;
+
+            const aTime = lastMsgTime[a._id] ? new Date(lastMsgTime[a._id]) : new Date(0);
+            const bTime = lastMsgTime[b._id] ? new Date(lastMsgTime[b._id]) : new Date(0);
+            return bTime - aTime; // latest first
+        });
+
+        res.status(200).json({ Msg: "Success", success: true, users: sortedUsers, unseenMsgs });
     } catch (error) {
-        res.status(401).json({Msg:"Failed msg!", Err:error.message})
+        res.status(500).json({ Msg: "Failed msg!", Err: error.message });
     }
 };
 
