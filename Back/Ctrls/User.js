@@ -9,18 +9,9 @@ const genToken =(id)=>{
     const token = jwt.sign({ id }, process.env.myJWTScrt, {expiresIn:'7d'})
     return token;
 } 
-// Add this temporarily to test your cloudinary config
-console.log({
-    cloud: process.env.CLOUDINARY_CLOUD_NAME,
-    key: process.env.CLOUDINARY_API_KEY,
-    secret: process.env.CLOUDINARY_API_SECRET
-})
 export const signUP = async (req, res) => {
-    console.log("SIGNUPBODY:", req.body);
-        console.log("signupHDR:", req.headers['content-type']);
+   
     try {
-        console.log("BODY:", req.body);      // check fields
-        console.log("FILE:", req.file);  
         const { uUserName, uFullName, uEmail, uPassword, uBio } = req.body;
 
         if (!uUserName || !uFullName || !uEmail || !uBio || !uPassword) {
@@ -33,9 +24,6 @@ export const signUP = async (req, res) => {
             const uploadResult = await cloudinary.uploader.upload(req.file.path);
             imageURL = uploadResult.secure_url; // ← this is what gets stored in DB
         }
-        console.log("MULTER:", req.file);
-        
-
         const saltStr = await bcrypt.genSalt(10);
         const encPassword = await bcrypt.hash(uPassword, saltStr);
 
@@ -58,12 +46,7 @@ export const signUP = async (req, res) => {
     }
 }
 export const logIn = async(req, res)=>{
-    console.log("LOGINBODY:", req.body);
-    console.log("LOGINHDR:", req.headers['content-type']);
-    
     try {
-        
-
         const {uEmail, uPassword} = req.body;
         if(!uEmail || !uPassword) return res.json({Msg:"Fill both the fields to login!"});
         let user = await uModel.findOne({uEmail});
@@ -126,7 +109,6 @@ export const editInfo = async (req, res) => {
                 { new: true }
             );
         }
-
         updatedInfo.uPassword = undefined;
         return res.status(200).json({ Msg: "Updated info", user: updatedInfo });
 

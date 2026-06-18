@@ -7,7 +7,6 @@ import fs from 'fs';
 import path from "path";
 import { uModel } from "../Models/theUSER.js";
 import { useRouteError } from "react-router-dom";
-// console.log("ROUTeS");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb)=>{

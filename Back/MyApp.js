@@ -43,12 +43,17 @@ myApp.get('/', (req, res) => res.send("Hello World"));
 myApp.use("/user", userRoutes);
 myApp.use("/msgs", msgsRoutes);
 
-const port = process.env.APP_PORT || 3700;
+myApp.use((err, req, res, next) => {
+    res.header('Access-Control-Allow-Origin', process.env.myFRONTURL);
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.status(500).json({ Msg: 'Server error', error: err.message });
+});
+const port = process.env.PORT || 3700;
 
-if(process.env.NODE_ENV !== 'production'){
+// if(process.env.NODE_ENV !== 'production'){
 
+// };
     myServer.listen(port, () => {
         console.log(`myApp is running on port ${port}`);
     });
-};
 export default myApp;
