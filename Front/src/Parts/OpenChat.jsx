@@ -9,6 +9,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import MsgContext from '../Cntxts/MsgsCntxt';
 import AuthContext from '../Cntxts/Context';
 import { useNavigate } from 'react-router-dom';
+import OpenProfile from './OpenProfile';
 
 function OpenChat() {
     const { onlineUsers, userAuth } = useContext(AuthContext);
@@ -19,6 +20,7 @@ function OpenChat() {
     const [previewMsgImgFile, setMsgImgPreview] = useState(null); //view Before sending msg
     const [viewMsgImgFile, setViewMsgImgFile] = useState(null); // Big onclick view after sending msg
     const [msgOpts, setMsgOpts] = useState(null); // msgs opts edit, delete, frwrd. stores msg._id, not boolean
+    const [showProfile, setShowProfile] = useState(false)
     const bottomRef = useRef(null);
 
     // console.log("MSGIMG:", msgImgFile);
@@ -54,18 +56,15 @@ function OpenChat() {
 
         return () => URL.revokeObjectURL(imgURL);
     }, [msgImgFile]);
-    const navigateTo = useNavigate()
-    const gotoProfile=()=>{
-        navigateTo('/openprofile')
-    }
+    
 
 
     return (
         <div className="flex-1 flex flex-col min-h-screen md:h-screen md:border-r border-gray-400">
             {/* Header */}
-            <div className="flex justify-between h-14 px-8 md:p-4 text-gray-700 bg-amber-100/50 sticky top-0">
-                <div className="flex gap-3 items-center">
-                    <span onClick={()=> setSelectedUser(null)} className=' hover:bg-gray-500/50 flex place-items-center text-center -ml-6 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
+            <div className="flex justify-between h-14 px-8 md:p-4 text-gray-700 border-b border-gray-400 sticky top-0">
+                <div className="flex gap-2 items-center">
+                    <span onClick={()=> setSelectedUser(null)} className=' hover:bg-gray-500/50 flex place-items-center text-center -ml-6 md:ml-0 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
                     <div className="rounded-full w-10 h-10 overflow-hidden bg-blue-700/80 text-gray-100 flex items-center justify-center shrink-0">
                         {selectedUser?.uProPic
                             ? <img src={selectedUser.uProPic} alt={selectedUser.uFullName} className='w-full h-full object-cover' />
@@ -82,14 +81,14 @@ function OpenChat() {
                 <div className="flex items-center gap-4">
                     <button className="text-xl cursor-pointer"><PiPhoneCallFill /></button>
                     <button className="text-xl cursor-pointer"><RiVideoAddFill /></button>
-                    <button onClick={gotoProfile} className="text-xl cursor-pointer"><CgMenuRight /></button>
+                    <button onClick={()=> setShowProfile(!showProfile)} className="text-xl cursor-pointer"><CgMenuRight /></button>
                 </div>
             </div>
 
             <hr className='border-gray-400 opacity-50 hidden md:block' />
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 mt-4 space-y-3">
                 {msgs.length === 0
                     ? <p className="text-center text-gray-500 text-sm mt-10">No messages yet</p>
                     : msgs.map((msg) => {
@@ -110,15 +109,15 @@ function OpenChat() {
                                 </div>
 
                                 {/* Bubble + Options */}
-                                <div className={`flex items-center gap-2 max-w-[60%] ${isMine ? 'flex-row-reverse' : 'flex-row'}`}>
+                                <div className={`flex items-center gap-2 max-w-[80%] sm:max-w[60%] ${isMine ? 'flex-row-reverse' : 'flex-row'}`}>
 
                                     {/* Bubble */}
                                     <div className={`px-4 py-2 rounded-2xl text-sm ${isMine ? 'bg-blue-500 text-white rounded-br-none' : 'bg-white/10 border border-white/10 text-gray-900 rounded-bl-none'}`}>
                                         {msg.msgImg && (
-                                            <img crossOrigin="anonymous"
+                                            <img 
                                                 onClick={() => setViewMsgImgFile(msg.msgImg)}
                                                 src={msg.msgImg}
-                                                className="rounded-md mb-2 max-w-[200px] cursor-pointer"
+                                                className="rounded-md mb-2 max-w-50 cursor-pointer"
                                             />
                                         )}
                                         {msg.msgTxts && <p>{msg.msgTxts}</p>}
@@ -139,10 +138,10 @@ function OpenChat() {
                                             <SlOptionsVertical />
                                         </span>
                                         {isOptsOpen && ( // ✅ only open for clicked message
-                                            <ul className={`absolute z-50 flex flex-col bg-white shadow-md rounded-md p-1 text-gray-700 text-sm w-24 ${isMine ? 'right-6' : 'left-6'} bottom-0`}>
-                                                <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Edit</li>
+                                            <ul className={`absolute z-50 flex flex-col items-start bg-white shadow-md rounded-md p-1 text-gray-700 text-sm w-36  ${isMine ? 'right-6 bottom-0 ' : '-left-36 sm:-left-28 top-6'} `}>
+                                               { isMine && <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Edit</li>}
                                                 <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Forward</li>
-                                                <button onClick={()=> deleteMsg(msg._id)} className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer text-red-500'>Delete</button>
+                                                <button onClick={()=> deleteMsg(msg._id)} className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer text-red-500'>{ isMine ? 'Delete from all' : 'Hide from me'}</button>
                                             </ul>
                                         )}
                                     </div>
@@ -205,6 +204,21 @@ function OpenChat() {
                     </button>
                 </div>
             </div>
+            {
+                showProfile && (
+                    <div className='inset-0 z-40 fixed md:hidden' onClick={()=> setShowProfile(!showProfile)}>
+                        <div onClick={(a)=> a.stopPropagation()}
+                            className='absolute right-0 top-0 h-full w-4/5 max-w-md bg-gray-400 shadow-xl overflow-y-auto animate-in slide-in-from-right'>
+                                <button onClick={()=> setShowProfile(!showProfile)} 
+                                    className='relative top-4 left-2 rounded-full 
+                                    text-center text-xl text-gray-800 '><IoIosArrowRoundBack/></button>
+
+                    <OpenProfile/>
+                        </div>
+
+                    </div>
+                )
+            }
         </div>
     );
 }

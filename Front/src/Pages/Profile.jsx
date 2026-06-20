@@ -41,7 +41,7 @@ function Profile() {
 }
 const navigateTo = useNavigate()
   return (
-    <div className="w-full md:max-w-11/12 h-screen rounded-md py-20 md:px-36 space-y-4 backdrop-blur-2xl sm:grid place-items-center">
+    <div className="w-full md:max-w-11/12 h-screen rounded-md py-6 sm:py-20 md:px-36 space-y-4 backdrop-blur-2xl sm:grid place-items-center">
       <span onClick={()=> navigateTo(-1)} className='absolute bg-gray-500/70 flex place-items-center text-center top-12 left-2 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
       <Logo/>
       <div className="w-5/6">

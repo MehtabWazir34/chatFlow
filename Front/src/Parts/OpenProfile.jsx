@@ -14,13 +14,13 @@ function OpenProfile() {
     sharedMedia;
   }, [sharedMedia])
   console.log('mmm', sharedMedia);
-  const navigateTo = useNavigate()
+  // const navigateTo = useNavigate()
   
   return (
     <div className='w-full flex-1 p-4 flex flex-col gap-y-3 text-gray-900'>
       <div className=' flex flex-col items-center justify-center border-b border-gray-500'>
 
-        <span onClick={()=> navigateTo(-1)} className='absolute bg-gray-500/70 flex place-items-center text-center top-12 left-2 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
+        {/* <span onClick={()=> navigateTo(-1)} className='absolute bg-gray-500/70 flex place-items-center text-center top-12 left-2 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span> */}
 
         {/* Profile pic */}
         <div className='rounded-full w-16 h-16 flex items-center justify-center  border border-gray-500'>
