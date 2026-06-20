@@ -12,7 +12,7 @@ function App(){
   const { userAuth, authLoading } = useContext(AuthContext)
   if(authLoading){
     return (
-      <div className='w-full h-screen flex justify-center items-center bg-gray-300 text-xl text-gray-800 text-center'>
+      <div className='w-full h-screen flex justify-center items-center bg-gray-300 text-xl text-gray-800 text-center animate-pulse'>
         Loading...
       </div>
     )

@@ -60,7 +60,7 @@ function OpenChat() {
 
 
     return (
-        <div className="flex-1 flex flex-col min-h-screen md:h-screen md:border-r border-gray-400">
+        <div className="flex-1 flex flex-col overflow-hidden h-screen md:border-r border-gray-400">
             {/* Header */}
             <div className="flex justify-between h-14 px-8 md:p-4 text-gray-700 border-b border-gray-400 sticky top-0">
                 <div className="flex gap-2 items-center">
@@ -137,13 +137,18 @@ function OpenChat() {
                                         >
                                             <SlOptionsVertical />
                                         </span>
-                                        {isOptsOpen && ( // ✅ only open for clicked message
-                                            <ul className={`absolute z-50 flex flex-col items-start bg-white shadow-md rounded-md p-1 text-gray-700 text-sm w-36  ${isMine ? 'right-6 bottom-0 ' : '-left-36 sm:-left-28 top-6'} `}>
-                                               { isMine && <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Edit</li>}
-                                                <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer'>Forward</li>
-                                                <button onClick={()=> deleteMsg(msg._id)} className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer text-red-500'>{ isMine ? 'Delete from all' : 'Hide from me'}</button>
-                                            </ul>
-                                        )}
+                                        {isOptsOpen && (
+    <ul className={`absolute z-50 flex flex-col items-start bg-white shadow-md rounded-md p-1 text-gray-700 text-sm w-32 top-full mt-1
+        ${isMine ? 'right-0' : 'left-0'}
+        `}
+    >
+        {isMine && <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer w-full'>Edit</li>}
+        <li className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer w-full'>Forward</li>
+        <button onClick={() => deleteMsg(msg._id)} className='hover:bg-gray-100 px-2 py-1 rounded cursor-pointer text-red-500 text-left w-full'>
+            {isMine ? 'Delete from all' : 'Hide from me'}
+        </button>
+    </ul>
+)}
                                     </div>
                                 </div>
                             </div>
@@ -206,7 +211,7 @@ function OpenChat() {
             </div>
             {
                 showProfile && (
-                    <div className='inset-0 z-40 fixed md:hidden' onClick={()=> setShowProfile(!showProfile)}>
+                    <div className='inset-0 z-40 fixed md:hidden bg-black/50' onClick={()=> setShowProfile(!showProfile)}>
                         <div onClick={(a)=> a.stopPropagation()}
                             className='absolute right-0 top-0 h-full w-4/5 max-w-md bg-gray-400 shadow-xl overflow-y-auto animate-in slide-in-from-right'>
                                 <button onClick={()=> setShowProfile(!showProfile)} 
