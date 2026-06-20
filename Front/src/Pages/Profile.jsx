@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { Logo } from "../Parts/Logo"
-import { API_INSTANCE } from "../Utls/API";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import { useContext } from "react";
 import AuthContext from "../Cntxts/Context";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const { userAuth, editInfo } = useContext(AuthContext);
@@ -38,10 +39,10 @@ function Profile() {
     console.log("ERR-EDITS", error.message);  
   } 
 }
-console.log("USER:", userAuth);
-
+const navigateTo = useNavigate()
   return (
-    <div className="max-w-11/12 h-screen rounded-md py-20 px-36 space-y-4 backdrop-blur-2xl">
+    <div className="w-full md:max-w-11/12 h-screen rounded-md py-20 md:px-36 space-y-4 backdrop-blur-2xl sm:grid place-items-center">
+      <span onClick={()=> navigateTo(-1)} className='absolute bg-gray-500/70 flex place-items-center text-center top-12 left-2 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
       <Logo/>
       <div className="w-5/6">
       <h2 className="text-xl font-semibold text-gray-700">Profile Details</h2>

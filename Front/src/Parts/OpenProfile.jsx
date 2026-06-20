@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import MsgContext from '../Cntxts/MsgsCntxt'
+import { useNavigate } from 'react-router-dom';
+import { IoIosArrowRoundBack } from "react-icons/io";
 
 function OpenProfile() {
-  const {selectedUser, msgs} = useContext(MsgContext)
+  const {selectedUser, setSelectedUser, msgs} = useContext(MsgContext)
   console.log("PROFILE_SLCTDUSR:", selectedUser);
   const [viewFile, setFIleVIew] = useState(false);
    
@@ -12,13 +14,18 @@ function OpenProfile() {
     sharedMedia;
   }, [sharedMedia])
   console.log('mmm', sharedMedia);
+  const navigateTo = useNavigate()
   
   return (
     <div className='w-full flex-1 p-4 flex flex-col gap-y-3 text-gray-900'>
-      <div className='flex flex-col items-center justify-center border-b border-gray-500'>
-        <div className='rounded-full w-16 h-16 flex items-center justify-center bg-blue-500/80 border border-gray-500'>
+      <div className=' flex flex-col items-center justify-center border-b border-gray-500'>
+
+        <span onClick={()=> navigateTo(-1)} className='absolute bg-gray-500/70 flex place-items-center text-center top-12 left-2 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
+
+        {/* Profile pic */}
+        <div className='rounded-full w-16 h-16 flex items-center justify-center  border border-gray-500'>
         {
-          selectedUser?.uProPic ? <img crossOrigin='anonymous' src={selectedUser.uProPic} alt="profile pic" className='rounded-full p-1 border border-black w-full h-full object-cover' /> :
+          selectedUser?.uProPic ? <img  src={selectedUser.uProPic} alt="profile pic" className='rounded-full p-1 border border-black w-full h-full object-cover' /> :
             <span className='text-2xl font-bold'>{selectedUser?.uFullName.slice(0,1)}</span>
         }
         </div>
@@ -33,7 +40,7 @@ function OpenProfile() {
     ? <p className="text-xs text-gray-500">No shared media yet</p>
     : sharedMedia.map((msg) => (
         <div key={msg._id} className='w-20 h-20 rounded-md border p-0.5 overflow-hidden cursor-pointer'>
-            <img crossOrigin='anonymous'
+            <img 
                 onClick={() => setFIleVIew(msg.msgImg)}
                 src={msg.msgImg}
                 alt="media"
@@ -45,10 +52,10 @@ function OpenProfile() {
             </div>
         {
                       viewFile && (
-                        <div className='fixed inset-0 z-50 flex justify-center items-center rounded-sm p-2 bg-black/60'>
-                        <div className='relative max-w-2xl h-[80vh] rounded-sm'>
-                          <span onClick={()=> setFIleVIew(!viewFile)} className='absolute -right-3 -top-3 rounded-full p-1 cursor-pointer hover:bg-black/80 bg-black transition-colors duration-200 w-6 h-6 flex items-center justify-center text-white' >x</span>
-                          <img onClick={()=> setFIleVIew(!viewFile)} src={viewFile} alt="viewFile" className='w-full h-full rounded-sm' />
+                        <div className='fixed inset-0 z-50 grid place-items-center bg-black/60'>
+                        <div className='relative max-w-2xl max-h-[80vh] rounded-sm'>
+                          <span onClick={()=> setFIleVIew(!viewFile)} className='absolute right-0 -top-3 rounded-full p-1 cursor-pointer hover:bg-black/80 bg-black transition-colors duration-200 w-6 h-6 flex items-center justify-center text-white' >x</span>
+                          <img onClick={()=> setFIleVIew(!viewFile)} src={viewFile} alt="viewFile" className='max-w-full max-h-[80vh] rounded-sm' />
                         </div>
                         </div>
                       )

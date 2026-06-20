@@ -22,7 +22,7 @@ function LeftSidebar() {
     //     };
     //     return acc;
     // }, {})
-    console.log("Unread:", unseenMsgs);
+    // console.log("Unread:", unseenMsgs);
     
     const filteredUsers = srchValue
         ? Users.filter((user) =>
@@ -36,12 +36,9 @@ function LeftSidebar() {
         await LogOut();
         navigateTo('/login');
     };
-    // const unseenMark = msgs.filter((msg)=> msg.msgSeen === false)
-    // setUnseenMsgs(unseenMark)
-    // console.log("UNSSEN:", unseenMsgs);
     
     return (
-        <div className={`flex flex-col h-full w-[320px] pr-8 border-r border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
+        <div className={`flex flex-col h-full w-[320px] sm:w-full pr-8 md:border-r md:border-gray-400 ${selectedUser ? 'max-md:hidden' : ''}`}>
             {/* Header */}
             <div className='w-full flex justify-between items-center p-4'>
                 <div className='flex flex-col'>
@@ -59,9 +56,9 @@ function LeftSidebar() {
             </div>
 
             {optsDisplay && (
-                <div className="flex flex-col absolute left-35 top-16 bg-amber-50/70 rounded-md px-2 py-6 max-w-1/5 h-40 text-gray-700 z-21">
-                    <Link to={'/profile'} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Edit Profile</Link>
-                    <span className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Change Mode</span>
+                <div className="flex flex-col absolute left-35 top-16 bg-amber-50/70 rounded-md px-2 py-4 w-[42vw] md:max-w-1/5 max-h-40 items-start text-gray-700 z-21">
+                    <Link to={'/profile'} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Setting</Link>
+                    {/* <span className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Change Mode</span> */}
                     <button onClick={LogOUT} className="hover:bg-gray-300 rounded-md transition duration-200 cursor-pointer p-2">Logout</button>
                 </div>
             )}
@@ -110,10 +107,7 @@ function LeftSidebar() {
                         </div>
                     ))
                 }
-            </div>
-            {/* {selectedUser && (
-                <OpenChat />
-            )} */}
+            </div> 
         </div>
     );
 }

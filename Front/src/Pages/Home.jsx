@@ -15,26 +15,34 @@ function Home() {
 
   return (
     <div className={`h-screen w-full max-w-4xl backdrop-blur-2xl border flex-col rounded-2xl border-gray-200 text-white `}>
-    <div className={`h-[99vh] w-full rounded-2xl overflow-y-hidden backdrop-blur-2xl grid grid-cols-1 relative ${ selectedUser ? 'md:grid-cols-[1fr_1.5fr_1.5fr] xl:grid-cols-[1fr_2fr_1.5fr]' : 'md:grid-cols-2'} `}>
+    <div className={`sm:hidden md:block h-[96vh] w-full rounded-2xl overflow-y-hidden backdrop-blur-2xl grid grid-cols-1 relative ${ selectedUser ? ' sm:grid-cols-1 md:grid-cols-[1fr_1.5fr_1.5fr] xl:grid-cols-[1fr_2fr_1.5fr]' : ' sm:grid-cols-1 md:grid-cols-2'} `}>
       
-     <div className="w-72 h-full border-r border-gray-400 flex flex-col overflow-hidden">
-        <LeftSidebar/>
+     <div className="w-72 h-full flex flex-col overflow-hidden">
+        <LeftSidebar />
      </div>
+     <div className="sm:flex-col md:flex h-full flex-1 flex-col overflow-y-auto md:overflow-hidden">
         {
           selectedUser ? (
             <>
-            <div className="h-full flex-1 flex-col overflow-hidden">
-            <OpenChat/>
+            <div className={` sm:overflow-auto md:overflow-hidden`}>
+            <OpenChat/> 
             </div>
-            <div className="w-64 h-full overflow-auto flex-col border-l border-gray-400">
-            <OpenProfile selectedUser={selectedUser} />
+            <div className="hidden md:block w-64 h-full overflow-auto flex-col border-l border-gray-400">
+            <OpenProfile />
             </div>
+            {/* </div> */}
             </>
           ) : (
+            <div className="hidden md:block">
             <Logo/>
+            </div>
           )
         }
     </div>
+    </div>
+
+    {/* Mobile home */}
+    
     </div>
   );
 }

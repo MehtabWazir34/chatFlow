@@ -3,13 +3,16 @@ import { RiVideoAddFill } from 'react-icons/ri'
 import { PiPhoneCallFill } from 'react-icons/pi'
 import { SlOptionsVertical } from "react-icons/sl";
 import { CgMenuRight } from "react-icons/cg";
+import { IoIosArrowRoundBack } from "react-icons/io";
+
 import { useContext, useEffect, useRef, useState } from 'react';
 import MsgContext from '../Cntxts/MsgsCntxt';
 import AuthContext from '../Cntxts/Context';
+import { useNavigate } from 'react-router-dom';
 
 function OpenChat() {
     const { onlineUsers, userAuth } = useContext(AuthContext);
-    const { selectedUser, sendMsg, msgs, deleteMsg } = useContext(MsgContext);
+    const { selectedUser, setSelectedUser, sendMsg, msgs, deleteMsg } = useContext(MsgContext);
 
     const [msgTxts, setMsgTxts] = useState(""); //msg inpute txts
     const [msgImgFile, setMsgImgFile] = useState(null); //selct imgfile for msgImg
@@ -18,7 +21,7 @@ function OpenChat() {
     const [msgOpts, setMsgOpts] = useState(null); // msgs opts edit, delete, frwrd. stores msg._id, not boolean
     const bottomRef = useRef(null);
 
-    console.log("MSGIMG:", msgImgFile);
+    // console.log("MSGIMG:", msgImgFile);
     
     // Auto scroll to bottom
     useEffect(() => {
@@ -27,9 +30,6 @@ function OpenChat() {
 
     const sendNEWMSg = () => {
         if (!msgTxts && !msgImgFile) return;
-        console.log("TXTS:", msgTxts);
-        console.log("img:", msgImgFile);
-        
         const msgData = new FormData();
         msgData.append("msgTxts", msgTxts);
         if (msgImgFile) msgData.append("msgImg", msgImgFile);
@@ -54,18 +54,18 @@ function OpenChat() {
 
         return () => URL.revokeObjectURL(imgURL);
     }, [msgImgFile]);
+    const navigateTo = useNavigate()
+    const gotoProfile=()=>{
+        navigateTo('/openprofile')
+    }
 
-    // const HndleDeleteMsg=(msgId)=>{
-    //     deleteMsg(msgId);
-    //     const upMSGS = chatMsgs.filter((msg)=> msg._id !== msgId)
-    //     setChat(upMSGS)
-    // }
 
     return (
-        <div className="flex-1 flex flex-col h-screen border-r border-gray-400">
+        <div className="flex-1 flex flex-col min-h-screen md:h-screen md:border-r border-gray-400">
             {/* Header */}
-            <div className="flex justify-between h-14 p-4 text-gray-700">
+            <div className="flex justify-between h-14 px-8 md:p-4 text-gray-700 bg-amber-100/50 sticky top-0">
                 <div className="flex gap-3 items-center">
+                    <span onClick={()=> setSelectedUser(null)} className=' hover:bg-gray-500/50 flex place-items-center text-center -ml-6 w-6 h-6 rounded-full p-0.5 cursor-pointer'><IoIosArrowRoundBack className='font-extrabold text-xl'/></span>
                     <div className="rounded-full w-10 h-10 overflow-hidden bg-blue-700/80 text-gray-100 flex items-center justify-center shrink-0">
                         {selectedUser?.uProPic
                             ? <img src={selectedUser.uProPic} alt={selectedUser.uFullName} className='w-full h-full object-cover' />
@@ -73,7 +73,7 @@ function OpenChat() {
                         }
                     </div>
                     <div className='flex flex-col'>
-                        <h2 className="text-lg font-semibold">{selectedUser?.uFullName}</h2>
+                        <h2 className="text-md max-w-full font-semibold">{selectedUser?.uFullName}</h2>
                         <p className="text-xs text-gray-500">
                             {onlineUsers.includes(selectedUser?._id) ? '🟢 Online' : '⚫ Offline'}
                         </p>
@@ -82,11 +82,11 @@ function OpenChat() {
                 <div className="flex items-center gap-4">
                     <button className="text-xl cursor-pointer"><PiPhoneCallFill /></button>
                     <button className="text-xl cursor-pointer"><RiVideoAddFill /></button>
-                    <button className="text-xl cursor-pointer"><CgMenuRight /></button>
+                    <button onClick={gotoProfile} className="text-xl cursor-pointer"><CgMenuRight /></button>
                 </div>
             </div>
 
-            <hr className='border-gray-400 opacity-50' />
+            <hr className='border-gray-400 opacity-50 hidden md:block' />
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
@@ -160,7 +160,7 @@ function OpenChat() {
                     <div className='relative max-w-2xl max-h-[80vh]'>
                         <span
                             onClick={() => setViewMsgImgFile(null)}
-                            className='absolute -top-3 -right-3 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer text-xs'
+                            className='absolute -top-3 right-0 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center cursor-pointer text-xs'
                         >x</span>
                         <img onClick={() => setViewMsgImgFile(null)} src={viewMsgImgFile} alt="preview" className='max-w-full max-h-[80vh] rounded-md' />
                     </div>
