@@ -9,7 +9,14 @@ import AuthContext from './Cntxts/Context'
 import {Toaster} from 'sonner'
 import OpenProfile from './Parts/OpenProfile'
 function App(){
-  const { userAuth } = useContext(AuthContext)
+  const { userAuth, authLoading } = useContext(AuthContext)
+  if(authLoading){
+    return (
+      <div className='w-full h-screen flex justify-center items-center bg-gray-300 text-xl text-gray-800 text-center'>
+        Loading...
+      </div>
+    )
+  }
   return(
     <>
     <main className="w-full h-screen bg-center bg-black/30 
@@ -17,10 +24,10 @@ function App(){
       {/* bg-[url('https://img.magnific.com/premium-photo/chat-app-icon-logo-design_113255-191767.jpg')] bg-contain bg-no-repeat  */}
       <Toaster className='top-18 flex justify-center'/>
     <Routes>
-        <Route path='/' element={ <Home/> } />
-        <Route path='/profile' element={ <Profile/> } />
-        {/* <Route path='/' element={ userAuth ? <Home/> :  <Navigate to="/login" />} />
-        <Route path='/profile' element={ userAuth ? <Profile/> :  <Navigate to="/login" />} /> */}
+        {/* <Route path='/' element={ <Home/> } />
+        <Route path='/profile' element={ <Profile/> } /> */}
+        <Route path='/' element={ userAuth ? <Home/> :  <Navigate to="/login" />} />
+        <Route path='/profile' element={ userAuth ? <Profile/> :  <Navigate to="/login" />} />
         <Route path='/login' element={<LoginToAccount/>} />
         <Route path='/openprofile' element={<OpenProfile/>} />
 

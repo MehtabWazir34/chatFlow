@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
     const [userAuth, setUserAuth] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [socket, setSocket] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true);
 
     const checkUserAuth = async () => {
         try {
@@ -24,6 +25,8 @@ export const AuthProvider = ({ children }) => {
             setToken(null);
             localStorage.removeItem("token");
             delete API_INSTANCE.defaults.headers.common["Authorization"];
+        } finally{
+            setAuthLoading(false)
         }
     };
 
@@ -100,12 +103,14 @@ export const AuthProvider = ({ children }) => {
         if (storedToken) {
             API_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
             checkUserAuth();
+        } else{
+            setAuthLoading(false)
         }
     }, []);
 
     const values = {
         onlineUsers, userAuth, setUserAuth,
-        socket, LogOut, editInfo, LogIN, SIGNup
+        socket, LogOut, editInfo, LogIN, SIGNup, authLoading
     };
 
     return (
